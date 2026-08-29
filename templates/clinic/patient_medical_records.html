@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediSecure | My Medical Records</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, Helvetica, sans-serif; background: #eaeded; color: #111; min-height: 100vh; }
+
+        /* NAVBAR */
+        .navbar { min-height: 64px; background: #131921; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; }
+        .logo { font-size: 25px; font-weight: bold; text-decoration: none; color: white; }
+        .logo span { color: #ff9900; }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a { color: #d7dce0; text-decoration: none; font-size: 14px; font-weight: bold; }
+        .nav-links a:hover { color: #ff9900; }
+        .nav-right { display: flex; align-items: center; gap: 22px; }
+        .user { color: #dddddd; font-size: 14px; }
+        .logout-button { background: transparent; border: 1px solid #ff9900; color: white; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; transition: 0.2s; }
+        .logout-button:hover { background: #ff9900; color: #111; }
+
+        /* MAIN CONTAINER - EXPANDED WIDTH */
+        .container { max-width: 1400px; margin: 0 auto; padding: 40px 30px; }
+        .page-header { margin-bottom: 40px; }
+        .page-header h1 { font-size: 30px; margin-bottom: 8px; }
+        .page-header p { color: #667085; font-size: 15px; }
+
+        /* FULL WIDTH RECORD SECTION (Row-Based) */
+        .record-section {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        /* HEADER BANNER */
+        .record-header {
+            background: #f8fafc;
+            padding: 25px 50px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .doctor-name { font-size: 22px; font-weight: bold; color: #111; }
+        .record-date { font-size: 15px; color: #667085; font-weight: bold; }
+
+        /* DATA ROWS */
+        .record-row {
+            display: flex;
+            padding: 35px 50px;
+            border-bottom: 1px solid #eee;
+        }
+        .row-label {
+            width: 250px;
+            flex-shrink: 0;
+            font-size: 13px;
+            font-weight: bold;
+            color: #667085;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .row-content {
+            flex-grow: 1;
+            font-size: 16px;
+            line-height: 1.7;
+            color: #111;
+        }
+
+        /* PRESCRIPTIONS */
+        .prescription-item {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px dashed #eee;
+        }
+        .prescription-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        .medication-name {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 6px;
+            color: #111;
+        }
+        .medication-instructions {
+            color: #444;
+            margin-bottom: 12px;
+        }
+        .signature-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #d4edda;
+            color: #155724;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        /* SECURITY FOOTER ROW */
+        .security-row {
+            background: #fdfdfd;
+            border-top: 1px solid #ddd;
+            padding: 20px 50px;
+            display: flex;
+            gap: 40px;
+            color: #555;
+            font-size: 13px;
+        }
+        .security-note {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            background: white;
+            padding: 60px 40px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .empty-state h2 { margin-bottom: 10px; font-size: 22px; }
+        .empty-state p { color: #667085; }
+
+        @media (max-width: 950px) {
+            .record-row { flex-direction: column; gap: 10px; padding: 25px; }
+            .record-header { padding: 25px; flex-direction: column; align-items: flex-start; gap: 10px; }
+            .security-row { padding: 20px 25px; flex-direction: column; gap: 15px; }
+            .row-label { width: 100%; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="{% url 'patient_dashboard' %}" class="logo">Medi<span>Secure</span></a>
+        
+        <div class="nav-links">
+            <a href="{% url 'patient_dashboard' %}">Dashboard</a>
+            <a href="{% url 'book_appointment' %}">Appointments</a>
+            <a href="{% url 'patient_medical_records' %}">Medical Records</a>
+        </div>
+
+        <div class="nav-right">
+            <span class="user">{{ request.user.username }}</span>
+            <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="logout-button">Logout</button>
+            </form>
+        </div>
+    </nav>
+
+    <main class="container">
+        
+        <div class="page-header">
+            <h1>My Medical Records</h1>
+            <p>Your secure medical information and prescriptions.</p>
+        </div>
+
+        {% if medical_records %}
+
+            {% for item in medical_records %}
+
+                <div class="record-section">
+
+                    <!-- HEADER ROW -->
+                    <div class="record-header">
+                        <div class="doctor-name">👨‍⚕️ Dr. {{ item.record.doctor.username }}</div>
+                        <div class="record-date">{{ item.record.created_at }}</div>
+                    </div>
+
+                    <!-- DIAGNOSIS ROW -->
+                    <div class="record-row">
+                        <div class="row-label">Diagnosis</div>
+                        <div class="row-content">
+                            {% if "DECRYPTION FAILED" in item.diagnosis %}
+                                <span style="color: #b42318; font-weight: bold;">{{ item.diagnosis }}</span>
+                            {% else %}
+                                {{ item.diagnosis }}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- CLINICAL NOTES ROW -->
+                    <div class="record-row">
+                        <div class="row-label">Clinical Notes</div>
+                        <div class="row-content">
+                            {{ item.record.clinical_notes|default:"No clinical notes provided." }}
+                        </div>
+                    </div>
+
+                    <!-- PRESCRIPTIONS ROW -->
+                    <div class="record-row" style="border-bottom: none;">
+                        <div class="row-label">Prescriptions</div>
+                        <div class="row-content">
+                            {% if item.prescriptions %}
+                                {% for prescription in item.prescriptions %}
+                                    <div class="prescription-item">
+                                        <div class="medication-name">{{ prescription.medication }}</div>
+                                        <div class="medication-instructions">{{ prescription.instructions|default:"No instructions provided." }}</div>
+                                        <div class="signature-badge">✍️ Digitally signed prescription</div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p style="color: #667085;">No prescriptions issued.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- SECURITY FOOTER ROW -->
+                    <div class="security-row">
+                        <div class="security-note">
+                            🔐 Diagnosis is stored encrypted in the database.
+                        </div>
+                        <div class="security-note">
+                            ✍️ Prescriptions are digitally signed using Ed25519.
+                        </div>
+                        <div class="security-note">
+                            🔗 Record integrity is protected by SHA-3 hash chain.
+                        </div>
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="empty-state">
+                <h2>No Medical Records</h2>
+                <p>Your doctor has not authored any secure medical records yet.</p>
+            </div>
+
+        {% endif %}
+
+    </main>
+
+</body>
+
+</html>

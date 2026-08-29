@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MediSecure | Patient Dashboard</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #eaeded;
+            color: #111;
+            min-height: 100vh;
+        }
+
+        /* =========================================================
+           NAVBAR
+        ========================================================= */
+
+        .navbar {
+            min-height: 64px;
+            background: #131921;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            color: white;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo span {
+            color: #ff9900;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: #d7dce0;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .nav-links a:hover {
+            color: #ff9900;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .user {
+            color: #dddddd;
+            font-size: 14px;
+        }
+
+        .logout-button {
+            background: transparent;
+            border: 1px solid #ff9900;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .logout-button:hover {
+            background: #ff9900;
+            color: #111;
+        }
+
+        /* =========================================================
+           MAIN CONTAINER
+        ========================================================= */
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 30px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #667085;
+            font-size: 15px;
+        }
+
+        /* =========================================================
+           SUMMARY ROW
+        ========================================================= */
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 30px 50px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .summary-item {
+            text-align: left;
+        }
+
+        .summary-label {
+            font-size: 12px;
+            color: #667085;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        /* =========================================================
+           ACTION ROWS
+        ========================================================= */
+
+        .action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 35px 50px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            transition:
+                transform 0.2s,
+                box-shadow 0.2s;
+        }
+
+        .action-row:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 14px rgba(0, 0, 0, 0.12);
+        }
+
+        .action-text {
+            max-width: 70%;
+        }
+
+        .card-tag {
+            display: inline-block;
+            margin-bottom: 12px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            background: #f3f4f6;
+            color: #555;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .action-text h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .action-text p {
+            color: #667085;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        /* =========================================================
+           BUTTONS
+        ========================================================= */
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 14px 24px;
+            background: #ff9900;
+            color: #111;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 15px;
+            font-weight: bold;
+            border: 1px solid #e88b00;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .button:hover {
+            background: #e88b00;
+        }
+
+        .secondary-button {
+            display: inline-block;
+            padding: 14px 24px;
+            background: #232f3e;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 15px;
+            font-weight: bold;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .secondary-button:hover {
+            background: #16202b;
+        }
+
+        /* =========================================================
+           SECURITY OVERVIEW
+        ========================================================= */
+
+        .security-row {
+            margin-top: 40px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 35px 50px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .security-row h2 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .security-description {
+            color: #667085;
+            font-size: 15px;
+            margin-bottom: 25px;
+        }
+
+        .security-items {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .security-item {
+            flex: 1;
+            background: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .security-name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .security-status {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #d4edda;
+            color: #155724;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 1100px) {
+
+            .navbar {
+                padding: 0 25px;
+            }
+
+            .nav-links {
+                gap: 12px;
+            }
+
+            .nav-links a {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 950px) {
+
+            .summary-row,
+            .action-row,
+            .security-items {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .action-text {
+                max-width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .security-item {
+                width: 100%;
+            }
+
+            .button-group {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .button,
+            .secondary-button {
+                width: 100%;
+                text-align: center;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- =========================================================
+         NAVBAR
+    ========================================================= -->
+
+    <nav class="navbar">
+
+        <a
+            href="{% url 'patient_dashboard' %}"
+            class="logo"
+        >
+            Medi<span>Secure</span>
+        </a>
+
+
+        <div class="nav-links">
+
+            <a href="{% url 'patient_dashboard' %}">
+                Dashboard
+            </a>
+
+            <a href="{% url 'book_appointment' %}">
+                Appointments
+            </a>
+
+            <a href="{% url 'patient_medical_records' %}">
+                Medical Records
+            </a>
+
+            <!-- NEW PRESCRIPTIONS OPTION -->
+
+            <a href="{% url 'patient_prescriptions' %}">
+                Prescriptions
+            </a>
+
+        </div>
+
+
+        <div class="nav-right">
+
+            <span class="user">
+                {{ request.user.username }}
+            </span>
+
+            <form
+                method="POST"
+                action="{% url 'logout' %}"
+                style="display: inline;"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
+                    Logout
+                </button>
+
+            </form>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+    ========================================================= -->
+
+    <main class="container">
+
+
+        <!-- PAGE HEADER -->
+
+        <div class="page-header">
+
+            <h1>
+                Good to see you, {{ request.user.username }}
+            </h1>
+
+            <p>
+                Manage your appointments, medical records,
+                prescriptions, and healthcare information.
+            </p>
+
+        </div>
+
+
+        <!-- =====================================================
+             SUMMARY
+        ===================================================== -->
+
+        <section class="summary-row">
+
+            <div class="summary-item">
+
+                <div class="summary-label">
+                    Account Role
+                </div>
+
+                <div class="summary-value">
+                    Patient
+                </div>
+
+            </div>
+
+
+            <div class="summary-item">
+
+                <div class="summary-label">
+                    Total Appointments
+                </div>
+
+                <div class="summary-value">
+                    {{ appointments_count|default:"0" }}
+                </div>
+
+            </div>
+
+
+            <div class="summary-item">
+
+                <div class="summary-label">
+                    Medical Records
+                </div>
+
+                <div class="summary-value">
+                    {{ records_count|default:"0" }}
+                </div>
+
+            </div>
+
+
+            <div class="summary-item">
+
+                <div class="summary-label">
+                    Account Status
+                </div>
+
+                <div
+                    class="summary-value"
+                    style="color: #2e7d32;"
+                >
+                    Active
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             APPOINTMENTS
+        ===================================================== -->
+
+        <section class="action-row">
+
+            <div class="action-text">
+
+                <span class="card-tag">
+                    Next Appointment
+                </span>
+
+
+                {% if next_appointment %}
+
+                    <h2>
+                        Dr. {{ next_appointment.doctor.username }}
+                    </h2>
+
+                    <p>
+
+                        Scheduled for
+                        <strong>
+                            {{ next_appointment.appointment_date }}
+                        </strong>
+
+                        at
+
+                        <strong>
+                            {{ next_appointment.appointment_time }}
+                        </strong>
+
+                        <br>
+
+                        Status:
+                        {{ next_appointment.get_status_display }}
+
+                    </p>
+
+                {% else %}
+
+                    <h2>
+                        No upcoming appointment
+                    </h2>
+
+                    <p>
+                        You currently do not have any scheduled
+                        visits. Schedule a consultation with an
+                        available doctor.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="button-group">
+
+                <a
+                    href="{% url 'book_appointment' %}"
+                    class="button"
+                >
+                    Book Appointment
+                </a>
+
+                <a
+                    href="{% url 'patient_appointments' %}"
+                    class="secondary-button"
+                >
+                    View History
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             MEDICAL RECORDS
+        ===================================================== -->
+
+        <section class="action-row">
+
+            <div class="action-text">
+
+                <span class="card-tag">
+                    Medical Information
+                </span>
+
+                <h2>
+                    Protected Medical Records
+                </h2>
+
+                <p>
+                    Access your AES-256-GCM encrypted clinical
+                    notes, diagnoses, and Ed25519 digitally signed
+                    prescriptions. Your data's integrity is protected
+                    by a SHA-3 hash chain.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'patient_medical_records' %}"
+                class="secondary-button"
+            >
+                View Medical Records
+            </a>
+
+        </section>
+
+
+        <!-- =====================================================
+             PRESCRIPTIONS
+        ===================================================== -->
+
+        <section class="action-row">
+
+            <div class="action-text">
+
+                <span class="card-tag">
+                    Prescription Management
+                </span>
+
+                <h2>
+                    My Prescriptions
+                </h2>
+
+                <p>
+                    View prescriptions issued by your doctor,
+                    including medication instructions and
+                    digitally signed prescription information.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'patient_prescriptions' %}"
+                class="secondary-button"
+            >
+                View Prescriptions
+            </a>
+
+        </section>
+
+
+        <!-- =====================================================
+             SECURITY
+        ===================================================== -->
+
+        <section class="security-row">
+
+            <h2>
+                Account Security
+            </h2>
+
+            <p class="security-description">
+                Current protection status for your patient account.
+            </p>
+
+
+            <div class="security-items">
+
+
+                <div class="security-item">
+
+                    <span class="security-name">
+                        Medical Data Protection
+                    </span>
+
+                    <span class="security-status">
+                        ACTIVE
+                    </span>
+
+                </div>
+
+
+                <div class="security-item">
+
+                    <span class="security-name">
+                        Record Integrity
+                    </span>
+
+                    <span class="security-status">
+                        ACTIVE
+                    </span>
+
+                </div>
+
+
+                <div class="security-item">
+
+                    <span class="security-name">
+                        Access Control
+                    </span>
+
+                    <span class="security-status">
+                        ACTIVE
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</body>
+
+</html>

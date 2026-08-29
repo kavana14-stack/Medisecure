@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>MediSecure | Doctor Appointments</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #eaeded;
+        }
+
+        .navbar {
+            height: 64px;
+            background: #131921;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 40px;
+
+            color: white;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #ff9900;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+        }
+
+        .container {
+            padding: 40px 50px;
+        }
+
+        h1 {
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .appointment {
+            background: white;
+
+            border: 1px solid #ddd;
+
+            border-radius: 8px;
+
+            padding: 24px;
+
+            margin-bottom: 18px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 30px;
+
+            box-shadow:
+                0 2px 6px
+                rgba(0, 0, 0, 0.08);
+        }
+
+        .patient {
+            font-size: 19px;
+
+            font-weight: bold;
+
+            margin-bottom: 10px;
+        }
+
+        .details {
+            color: #555;
+
+            line-height: 1.8;
+        }
+
+        .status {
+            display: inline-block;
+
+            padding: 7px 14px;
+
+            border-radius: 20px;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            margin-bottom: 15px;
+        }
+
+        .pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .accepted {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .completed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-button {
+            border: none;
+
+            padding: 11px 18px;
+
+            border-radius: 5px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .accept {
+            background: #ff9900;
+            color: #111;
+        }
+
+        .reject {
+            background: #232f3e;
+            color: white;
+        }
+
+        .record-button {
+            display: inline-block;
+
+            margin-top: 5px;
+
+            padding: 11px 18px;
+
+            background: #ff9900;
+
+            color: #111;
+
+            text-decoration: none;
+
+            border-radius: 5px;
+
+            font-weight: bold;
+        }
+
+        .record-button:hover {
+            background: #e88b00;
+        }
+
+        .accepted-message {
+            color: #155724;
+
+            font-size: 14px;
+
+            margin-bottom: 10px;
+        }
+
+        .empty {
+            background: white;
+
+            padding: 40px;
+
+            border: 1px solid #ddd;
+
+            border-radius: 8px;
+
+            text-align: center;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Medi<span>Secure</span>
+        </div>
+
+        <a
+            href="{% url 'doctor_dashboard' %}"
+            class="nav-link"
+        >
+            Dashboard
+        </a>
+
+    </nav>
+
+
+    <main class="container">
+
+        <h1>
+            Appointment Requests
+        </h1>
+
+        <p class="subtitle">
+            Review appointments requested by your patients.
+        </p>
+
+
+        {% if appointments %}
+
+            {% for appointment in appointments %}
+
+                <div class="appointment">
+
+
+                    <!-- PATIENT INFORMATION -->
+
+                    <div>
+
+                        <div class="patient">
+
+                            👤
+                            {{ appointment.patient.get_full_name|default:appointment.patient.username }}
+
+                        </div>
+
+
+                        <div class="details">
+
+                            📅
+                            {{ appointment.appointment_date }}
+
+                            <br>
+
+                            🕐
+                            {{ appointment.appointment_time }}
+
+                            <br>
+
+                            📝
+                            {{ appointment.reason|default:"No reason provided" }}
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- STATUS AND ACTIONS -->
+
+                    <div>
+
+                        <!-- STATUS -->
+
+                        <span
+                            class="status
+                            {% if appointment.status == 'PENDING' %}
+                                pending
+                            {% elif appointment.status == 'ACCEPTED' %}
+                                accepted
+                            {% elif appointment.status == 'REJECTED' %}
+                                rejected
+                            {% elif appointment.status == 'COMPLETED' %}
+                                completed
+                            {% endif %}"
+                        >
+
+                            {{ appointment.get_status_display }}
+
+                        </span>
+
+
+
+                        <!-- PENDING -->
+
+                        {% if appointment.status == "PENDING" %}
+
+                            <div class="actions">
+
+
+                                <!-- ACCEPT -->
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'update_appointment_status' appointment.id %}"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <input
+                                        type="hidden"
+                                        name="action"
+                                        value="accept"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="action-button accept"
+                                    >
+                                        ✓ Accept
+                                    </button>
+
+                                </form>
+
+
+
+                                <!-- REJECT -->
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'update_appointment_status' appointment.id %}"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <input
+                                        type="hidden"
+                                        name="action"
+                                        value="reject"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="action-button reject"
+                                    >
+                                        ✕ Reject
+                                    </button>
+
+                                </form>
+
+
+                            </div>
+
+                        {% endif %}
+
+
+
+                        <!-- ACCEPTED -->
+
+                        {% if appointment.status == "ACCEPTED" %}
+
+                            <div>
+
+                                <div class="accepted-message">
+
+                                    ✓ Appointment accepted
+
+                                </div>
+
+
+                                {% if appointment.medical_record %}
+
+                                    <a
+                                        href="{% url 'view_medical_record' appointment.id %}"
+                                        class="record-button"
+                                    >
+                                        🔐 View Medical Record
+                                    </a>
+
+                                {% else %}
+
+                                    <a
+                                        href="{% url 'create_medical_record' appointment.id %}"
+                                        class="record-button"
+                                    >
+                                        🩺 Create Medical Record
+                                    </a>
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endif %}
+
+
+
+                    </div>
+
+
+                </div>
+
+            {% endfor %}
+
+
+        {% else %}
+
+
+            <div class="empty">
+
+                <h2>
+                    No appointments
+                </h2>
+
+                <p>
+                    You currently have no appointment requests.
+                </p>
+
+            </div>
+
+
+        {% endif %}
+
+
+    </main>
+
+
+</body>
+
+</html>

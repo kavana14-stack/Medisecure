@@ -1,0 +1,298 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediSecure | Create Account</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { width: 100%; min-height: 100%; }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #ffffff;
+            color: #0f172a;
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; }
+
+        /* NAVBAR */
+        .navbar {
+            width: 100%; height: 75px; background: #131921; display: flex; align-items: center;
+            justify-content: space-between; padding: 0 40px; color: #ffffff;
+        }
+        .logo { color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: -0.7px; }
+        .logo span { color: #ff9900; }
+        .nav-right { display: flex; align-items: center; gap: 10px; color: #d4dbe1; font-size: 15px; }
+        .nav-status-dot { width: 10px; height: 10px; background: #4caf50; border-radius: 50%; }
+        .nav-login { color: #ffffff; font-size: 15px; font-weight: 600; margin-left: 15px; }
+        .nav-login:hover { color: #ff9900; }
+
+        /* SPLIT LAYOUT */
+        .register-page {
+            width: 100%; min-height: calc(100vh - 150px);
+            display: grid; grid-template-columns: 50% 50%;
+        }
+
+        /* LEFT SIDE */
+        .healthcare-side {
+            width: 100%; background: #eef0ff; padding: 80px 70px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .healthcare-content { width: 100%; max-width: 650px; }
+        .section-label { color: #46578c; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; }
+        .healthcare-content h1 { color: #18213d; font-size: 48px; line-height: 1.1; letter-spacing: -1px; margin-bottom: 25px; }
+        .healthcare-content h1 span { color: #ff9900; }
+        .healthcare-description { color: #475569; font-size: 18px; line-height: 1.6; margin-bottom: 40px; }
+
+        .benefit-list { display: flex; flex-direction: column; gap: 16px; }
+        .benefit-card { display: flex; align-items: flex-start; gap: 18px; padding: 22px; background: rgba(255,255,255,0.7); border: 1px solid #d4daf5; border-radius: 8px; }
+        .benefit-icon { width: 48px; height: 48px; min-width: 48px; display: flex; align-items: center; justify-content: center; background: #e2e7ff; border-radius: 8px; color: #354a98; font-weight: bold; font-size: 20px;}
+        .benefit-content h3 { color: #1e293b; font-size: 18px; margin-bottom: 6px; }
+        .benefit-content p { color: #475569; font-size: 15px; line-height: 1.5; }
+
+        .account-types { margin-top: 40px; padding-top: 30px; border-top: 2px solid #d4daf5; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .account-type { display: flex; align-items: flex-start; gap: 12px; }
+        .type-mark { width: 32px; height: 32px; min-width: 32px; border-radius: 50%; background: #d4daf5; display: flex; align-items: center; justify-content: center; color: #1e2d63; font-size: 14px; font-weight: 800; }
+        .account-type strong { display: block; color: #1e2d63; font-size: 16px; margin-bottom: 4px; }
+        .account-type span { color: #475569; font-size: 14px; line-height: 1.4; }
+
+        /* RIGHT SIDE */
+        .register-side { width: 100%; background: #ffffff; display: flex; align-items: center; justify-content: center; padding: 60px 80px; }
+        .register-box { width: 100%; max-width: 650px; }
+        
+        .register-header { margin-bottom: 30px; }
+        .register-header h2 { color: #0f172a; font-size: 38px; letter-spacing: -0.5px; margin-bottom: 10px; }
+        .register-header p { color: #475569; font-size: 16px; line-height: 1.6; }
+
+        .notice { display: flex; align-items: flex-start; gap: 15px; padding: 20px; margin-bottom: 30px; background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #ff9900; border-radius: 6px; }
+        .notice-icon { width: 32px; height: 32px; min-width: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background: #fff5e5; color: #a65d00; font-size: 16px; font-weight: bold; }
+        .notice strong { display: block; color: #0f172a; font-size: 15px; margin-bottom: 4px; }
+        .notice p { color: #475569; font-size: 14px; line-height: 1.5; }
+
+        .form-errors { background: #fee2e2; border: 1px solid #f87171; color: #991b1b; padding: 15px 20px; border-radius: 6px; margin-bottom: 25px; font-size: 15px; }
+        .field-error { color: #dc2626; font-size: 13px; margin-top: 6px; font-weight: bold; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .full-width { grid-column: 1 / -1; }
+
+        .form-group label { display: block; color: #0f172a; font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+        .form-group input, .form-group select { width: 100%; height: 55px; padding: 0 16px; border: 1px solid #cbd5e1; border-radius: 6px; background: #ffffff; color: #0f172a; font-size: 16px; font-family: inherit; transition: 0.2s; }
+        .form-group input::placeholder { color: #94a3b8; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: #ff9900; box-shadow: 0 0 0 3px rgba(255,153,0,0.15); }
+
+        .password-wrapper { position: relative; }
+        .password-wrapper input { padding-right: 80px; }
+        .password-toggle { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); border: none; background: transparent; color: #2563eb; font-size: 14px; font-weight: 700; cursor: pointer; padding: 5px; }
+        .password-toggle:hover { color: #1d4ed8; }
+
+        .role-help { margin-top: 8px; color: #64748b; font-size: 13px; line-height: 1.5; }
+
+        .register-button { width: 100%; height: 55px; border: none; border-radius: 6px; background: #ff9900; color: #111; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        .register-button:hover { background: #e88b00; }
+
+        .login-section { margin-top: 30px; padding-top: 25px; border-top: 1px solid #e2e8f0; text-align: center; color: #475569; font-size: 15px; }
+        .login-section a { color: #2563eb; font-weight: bold; margin-left: 6px; }
+        .login-section a:hover { text-decoration: underline; }
+        .privacy-note { margin-top: 15px; text-align: center; color: #64748b; font-size: 13px; }
+
+        /* FOOTER */
+        .footer { width: 100%; min-height: 75px; background: #131921; color: #cbd5e1; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; font-size: 13px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .footer strong { color: #ffffff; font-weight: bold; }
+
+        @media (max-width: 1100px) {
+            .register-page { grid-template-columns: 1fr; }
+            .healthcare-side, .register-side { padding: 60px 40px; }
+        }
+        @media (max-width: 600px) {
+            .navbar { padding: 0 20px; }
+            .nav-right { display: none; }
+            .form-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: auto; }
+            .account-types { grid-template-columns: 1fr; }
+            .healthcare-content h1 { font-size: 38px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="logo">Medi<span>Secure</span></a>
+        <div class="nav-right">
+            <span class="nav-status-dot"></span>
+            Secure Healthcare Access
+            <a href="{% url 'login' %}" class="nav-login">Sign in</a>
+        </div>
+    </nav>
+
+    <main class="register-page">
+
+        <!-- LEFT SIDE -->
+        <section class="healthcare-side">
+            <div class="healthcare-content">
+                <div class="section-label">Secure Healthcare Platform</div>
+                <h1>Create your <span>healthcare account.</span></h1>
+                <p class="healthcare-description">Join MediSecure to manage appointments, medical records, clinical information, and prescriptions through a connected healthcare workflow.</p>
+
+                <div class="benefit-list">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">📅</div>
+                        <div class="benefit-content">
+                            <h3>Healthcare Appointments</h3>
+                            <p>Request and manage visits through your patient or clinical workflow.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">📁</div>
+                        <div class="benefit-content">
+                            <h3>Medical Records</h3>
+                            <p>Keep authorized clinical information organized within the platform.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">💊</div>
+                        <div class="benefit-content">
+                            <h3>Prescriptions</h3>
+                            <p>Access prescriptions issued through the clinical workflow.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="account-types">
+                    <div class="account-type">
+                        <div class="type-mark">P</div>
+                        <div>
+                            <strong>Patient Account</strong>
+                            <span>Manage personal healthcare information.</span>
+                        </div>
+                    </div>
+                    <div class="account-type">
+                        <div class="type-mark">D</div>
+                        <div>
+                            <strong>Doctor Account</strong>
+                            <span>Manage appointments and clinical workflows.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT SIDE (FORM) -->
+        <section class="register-side">
+            <div class="register-box">
+                <div class="register-header">
+                    <h2>Create account</h2>
+                    <p>Enter your details to create your MediSecure account.</p>
+                </div>
+
+                <div class="notice">
+                    <div class="notice-icon">!</div>
+                    <div>
+                        <strong>Account registration</strong>
+                        <p>Public registration is available for authorized patient and doctor accounts. Administrative access is controlled separately.</p>
+                    </div>
+                </div>
+
+                {% if form.non_field_errors %}
+                    <div class="form-errors">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="{{ form.first_name.id_for_label }}">First name</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}<div class="field-error">{{ form.first_name.errors }}</div>{% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.last_name.id_for_label }}">Last name</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}<div class="field-error">{{ form.last_name.errors }}</div>{% endif %}
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="{{ form.username.id_for_label }}">Username</label>
+                            {{ form.username }}
+                            {% if form.username.errors %}<div class="field-error">{{ form.username.errors }}</div>{% endif %}
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="{{ form.email.id_for_label }}">Email address</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}<div class="field-error">{{ form.email.errors }}</div>{% endif %}
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="{{ form.role.id_for_label }}">Account type</label>
+                            {{ form.role }}
+                            <div class="role-help">Select the account type appropriate for your role in the healthcare system.</div>
+                            {% if form.role.errors %}<div class="field-error">{{ form.role.errors }}</div>{% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.password.id_for_label }}">Password</label>
+                            <div class="password-wrapper">
+                                {{ form.password }}
+                                <button type="button" class="password-toggle" data-target="{{ form.password.id_for_label }}">Show</button>
+                            </div>
+                            {% if form.password.errors %}<div class="field-error">{{ form.password.errors }}</div>{% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.confirm_password.id_for_label }}">Confirm password</label>
+                            <div class="password-wrapper">
+                                {{ form.confirm_password }}
+                                <button type="button" class="password-toggle" data-target="{{ form.confirm_password.id_for_label }}">Show</button>
+                            </div>
+                            {% if form.confirm_password.errors %}<div class="field-error">{{ form.confirm_password.errors }}</div>{% endif %}
+                        </div>
+
+                        <div class="form-group full-width">
+                            <button type="submit" class="register-button">Create secure account</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="login-section">
+                    Already have a MediSecure account? <a href="{% url 'login' %}">Sign in</a>
+                </div>
+                <div class="privacy-note">
+                    Your account is subject to MediSecure's application-level access controls.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div>
+            <strong>MediSecure</strong> &nbsp;·&nbsp; Secure Medical Record Management System &nbsp;·&nbsp; Secure Healthcare Access<br>
+            © 2026 MediSecure
+        </div>
+    </footer>
+
+    <script>
+        const passwordButtons = document.querySelectorAll(".password-toggle");
+        passwordButtons.forEach(function(button) {
+            button.addEventListener("click", function() {
+                const targetId = button.getAttribute("data-target");
+                const input = document.getElementById(targetId);
+                if (!input) return;
+
+                if (input.type === "password") {
+                    input.type = "text";
+                    button.textContent = "Hide";
+                } else {
+                    input.type = "password";
+                    button.textContent = "Show";
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2425 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="MediSecure secure medical record management platform"
+    >
+
+    <title>MediSecure | Secure Healthcare Platform</title>
+
+
+    <style>
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                #f4f6f7;
+
+            color:
+                #111827;
+
+            line-height:
+                1.5;
+        }
+
+
+        a {
+            text-decoration:
+                none;
+        }
+
+
+        img {
+            max-width:
+                100%;
+        }
+
+
+        /* =====================================================
+           VARIABLES
+        ===================================================== */
+
+        :root {
+
+            --navy: #131921;
+            --navy-light: #202b38;
+
+            --orange: #ff9900;
+            --orange-dark: #e88b00;
+
+            --white: #ffffff;
+
+            --background: #f4f6f7;
+
+            --text: #111827;
+            --text-secondary: #536273;
+            --text-muted: #667085;
+
+            --border: #d8dde1;
+
+            --blue: #1769aa;
+
+            --green: #2e7d32;
+        }
+
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        .navbar {
+
+            width:
+                100%;
+
+            height:
+                70px;
+
+            background:
+                var(--navy);
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            padding:
+                0
+                clamp(20px, 5vw, 70px);
+
+            color:
+                white;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,0.08);
+
+            position:
+                sticky;
+
+            top:
+                0;
+
+            z-index:
+                100;
+        }
+
+
+        .logo {
+
+            color:
+                white;
+
+            font-size:
+                26px;
+
+            font-weight:
+                700;
+
+            letter-spacing:
+                -0.7px;
+        }
+
+
+        .logo span {
+
+            color:
+                var(--orange);
+        }
+
+
+        .nav-links {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                30px;
+        }
+
+
+        .nav-links a {
+
+            color:
+                #d6dde3;
+
+            font-size:
+                13px;
+
+            transition:
+                color 0.2s;
+        }
+
+
+        .nav-links a:hover {
+
+            color:
+                var(--orange);
+        }
+
+
+        .nav-actions {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                10px;
+        }
+
+
+        .login-link {
+
+            color:
+                #ffffff;
+
+            padding:
+                9px 15px;
+
+            border:
+                1px solid
+                rgba(255,255,255,0.35);
+
+            border-radius:
+                4px;
+
+            font-size:
+                12px;
+
+            font-weight:
+                700;
+
+            transition:
+                0.2s;
+        }
+
+
+        .login-link:hover {
+
+            color:
+                var(--orange);
+
+            border-color:
+                var(--orange);
+        }
+
+
+        .register-link {
+
+            color:
+                #111111;
+
+            background:
+                var(--orange);
+
+            padding:
+                10px 16px;
+
+            border-radius:
+                4px;
+
+            font-size:
+                12px;
+
+            font-weight:
+                700;
+
+            transition:
+                0.2s;
+        }
+
+
+        .register-link:hover {
+
+            background:
+                var(--orange-dark);
+        }
+
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+
+            position:
+                relative;
+
+            min-height:
+                590px;
+
+            overflow:
+                hidden;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            background:
+                #eef1f2;
+        }
+
+
+        /* =====================================================
+           HERO IMAGE
+        ===================================================== */
+
+        .hero-image {
+
+            position:
+                absolute;
+
+            inset:
+                0;
+
+            background-image:
+                url("{% static 'clinic/medical-hero.jpg' %}");
+
+            background-size:
+                cover;
+
+            background-position:
+                58% center;
+
+            opacity:
+                0.62;
+
+            filter:
+                saturate(0.95)
+                contrast(1)
+                brightness(1);
+
+            transform:
+                scale(1.08);
+
+            z-index:
+                0;
+        }
+
+
+        /* =====================================================
+           HERO OVERLAY
+        ===================================================== */
+
+        .hero-overlay {
+
+            position:
+                absolute;
+
+            inset:
+                0;
+
+            z-index:
+                1;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(244,246,247,0.95) 0%,
+                    rgba(244,246,247,0.84) 27%,
+                    rgba(244,246,247,0.54) 55%,
+                    rgba(244,246,247,0.18) 100%
+                );
+        }
+
+
+        /* =====================================================
+           HERO INNER
+        ===================================================== */
+
+        .hero-inner {
+
+            position:
+                relative;
+
+            z-index:
+                4;
+
+            width:
+                100%;
+
+            max-width:
+                1180px;
+
+            margin:
+                0 auto;
+
+            padding:
+                75px 25px 105px;
+
+            display:
+                grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                350px;
+
+            gap:
+                60px;
+
+            align-items:
+                center;
+        }
+
+
+        /* =====================================================
+           HERO CONTENT
+        ===================================================== */
+
+        .hero-content {
+
+            max-width:
+                700px;
+        }
+
+
+        .hero-label {
+
+            display:
+                inline-block;
+
+            padding:
+                7px 11px;
+
+            background:
+                rgba(255,255,255,0.92);
+
+            border:
+                1px solid
+                #e4b65f;
+
+            color:
+                #8f5900;
+
+            border-radius:
+                4px;
+
+            font-size:
+                10px;
+
+            font-weight:
+                700;
+
+            letter-spacing:
+                0.7px;
+
+            text-transform:
+                uppercase;
+
+            margin-bottom:
+                19px;
+        }
+
+
+        .hero h1 {
+
+            font-size:
+                clamp(42px, 5vw, 61px);
+
+            line-height:
+                1.04;
+
+            letter-spacing:
+                -1.7px;
+
+            color:
+                #0f141a;
+
+            max-width:
+                680px;
+
+            margin-bottom:
+                21px;
+        }
+
+
+        .hero h1 span {
+
+            color:
+                var(--orange);
+        }
+
+
+        .hero-description {
+
+            max-width:
+                650px;
+
+            color:
+                #344054;
+
+            font-size:
+                16px;
+
+            line-height:
+                1.75;
+
+            margin-bottom:
+                28px;
+        }
+
+
+        /* =====================================================
+           HERO BUTTONS
+        ===================================================== */
+
+        .hero-actions {
+
+            display:
+                flex;
+
+            gap:
+                12px;
+
+            flex-wrap:
+                wrap;
+        }
+
+
+        .primary-button,
+        .secondary-button {
+
+            display:
+                inline-block;
+
+            padding:
+                13px 20px;
+
+            border-radius:
+                5px;
+
+            font-size:
+                14px;
+
+            font-weight:
+                700;
+
+            transition:
+                0.2s;
+        }
+
+
+        .primary-button {
+
+            background:
+                var(--orange);
+
+            color:
+                #111111;
+
+            border:
+                1px solid
+                var(--orange-dark);
+
+            box-shadow:
+                0 3px 8px
+                rgba(0,0,0,0.10);
+        }
+
+
+        .primary-button:hover {
+
+            background:
+                var(--orange-dark);
+
+            transform:
+                translateY(-1px);
+        }
+
+
+        .secondary-button {
+
+            background:
+                rgba(255,255,255,0.93);
+
+            color:
+                var(--navy);
+
+            border:
+                1px solid
+                #8f969d;
+        }
+
+
+        .secondary-button:hover {
+
+            border-color:
+                var(--orange);
+
+            color:
+                #8f5900;
+
+            transform:
+                translateY(-1px);
+        }
+
+
+        /* =====================================================
+           HERO SECURITY LINE
+        ===================================================== */
+
+        .security-line {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                10px;
+
+            flex-wrap:
+                wrap;
+
+            margin-top:
+                24px;
+
+            color:
+                #475467;
+
+            font-size:
+                11px;
+        }
+
+
+        .security-divider {
+
+            width:
+                3px;
+
+            height:
+                3px;
+
+            border-radius:
+                50%;
+
+            background:
+                #667085;
+        }
+
+
+        /* =====================================================
+           HERO PANEL
+        ===================================================== */
+
+        .hero-panel {
+
+            background:
+                rgba(255,255,255,0.96);
+
+            border:
+                1px solid
+                rgba(213,217,217,0.95);
+
+            border-radius:
+                10px;
+
+            padding:
+                24px;
+
+            box-shadow:
+                0 12px 32px
+                rgba(0,0,0,0.13);
+
+            backdrop-filter:
+                blur(6px);
+        }
+
+
+        .hero-panel-title {
+
+            font-size:
+                15px;
+
+            font-weight:
+                700;
+
+            margin-bottom:
+                18px;
+        }
+
+
+        .hero-status {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            gap:
+                15px;
+
+            padding:
+                14px 0;
+
+            border-bottom:
+                1px solid
+                #eaeded;
+        }
+
+
+        .hero-status:last-child {
+
+            border-bottom:
+                none;
+        }
+
+
+        .hero-status-name {
+
+            font-size:
+                13px;
+
+            font-weight:
+                700;
+        }
+
+
+        .hero-status-description {
+
+            display:
+                block;
+
+            color:
+                var(--text-muted);
+
+            font-size:
+                11px;
+
+            margin-top:
+                2px;
+        }
+
+
+        .hero-status-value {
+
+            color:
+                var(--green);
+
+            font-size:
+                11px;
+
+            font-weight:
+                700;
+
+            white-space:
+                nowrap;
+        }
+
+
+        /* =====================================================
+           SIMPLE DIVIDER
+        ===================================================== */
+
+        .section-divider {
+
+            width:
+                100%;
+
+            height:
+                1px;
+
+            background:
+                #d7dce1;
+        }
+
+
+        /* =====================================================
+           GENERAL SECTION
+        ===================================================== */
+
+        .section {
+
+            max-width:
+                1180px;
+
+            margin:
+                0 auto;
+
+            padding:
+                72px 25px;
+        }
+
+
+        .section-heading {
+
+            max-width:
+                780px;
+
+            margin-bottom:
+                36px;
+        }
+
+
+        .section-label {
+
+            color:
+                var(--orange-dark);
+
+            font-size:
+                11px;
+
+            font-weight:
+                700;
+
+            letter-spacing:
+                0.7px;
+
+            text-transform:
+                uppercase;
+
+            margin-bottom:
+                10px;
+        }
+
+
+        .section-heading h2 {
+
+            font-size:
+                clamp(28px,4vw,38px);
+
+            line-height:
+                1.15;
+
+            letter-spacing:
+                -0.8px;
+
+            margin-bottom:
+                11px;
+        }
+
+
+        .section-heading p {
+
+            color:
+                var(--text-secondary);
+
+            font-size:
+                15px;
+
+            line-height:
+                1.7;
+        }
+
+
+        /* =====================================================
+           MEDICAL CARDS
+        ===================================================== */
+
+        .medical-grid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(3,1fr);
+
+            gap:
+                20px;
+        }
+
+
+        .medical-card {
+
+            background:
+                var(--white);
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius:
+                8px;
+
+            overflow:
+                hidden;
+
+            box-shadow:
+                0 2px 8px
+                rgba(0,0,0,0.05);
+
+            transition:
+                transform 0.2s,
+                box-shadow 0.2s;
+        }
+
+
+        .medical-card:hover {
+
+            transform:
+                translateY(-3px);
+
+            box-shadow:
+                0 8px 20px
+                rgba(0,0,0,0.09);
+        }
+
+
+        /* =====================================================
+           NEW MEDICAL IMAGES
+        ===================================================== */
+
+        .medical-card-image {
+
+            display:
+                block;
+
+            width:
+                100%;
+
+            height:
+                210px;
+
+            object-fit:
+                cover;
+
+            object-position:
+                center;
+
+            background:
+                #eef0ff;
+
+            border-bottom:
+                1px solid
+                var(--border);
+        }
+
+
+        /* RECORD IMAGE */
+
+        .medical-card.records
+        .medical-card-image {
+
+            object-position:
+                center center;
+        }
+
+
+        /* APPOINTMENT IMAGE */
+
+        .medical-card.appointments
+        .medical-card-image {
+
+            object-position:
+                center center;
+        }
+
+
+        /* PRESCRIPTION IMAGE */
+
+        .medical-card.prescriptions
+        .medical-card-image {
+
+            object-position:
+                center center;
+        }
+
+
+        .medical-content {
+
+            padding:
+                22px;
+        }
+
+
+        .medical-content h3 {
+
+            font-size:
+                19px;
+
+            margin-bottom:
+                9px;
+        }
+
+
+        .medical-content p {
+
+            color:
+                var(--text-secondary);
+
+            font-size:
+                13px;
+
+            line-height:
+                1.65;
+        }
+
+
+        .learn-link {
+
+            display:
+                inline-block;
+
+            margin-top:
+                15px;
+
+            color:
+                var(--blue);
+
+            font-size:
+                12px;
+
+            font-weight:
+                700;
+        }
+
+
+        .learn-link:hover {
+
+            color:
+                #c45500;
+        }
+
+
+        /* =====================================================
+           WORKFLOW SECTION
+        ===================================================== */
+
+        .workflow-section {
+
+            background:
+                #ffffff;
+
+            border-top:
+                1px solid
+                var(--border);
+
+            border-bottom:
+                1px solid
+                var(--border);
+        }
+
+
+        .workflow-grid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(3,1fr);
+
+            gap:
+                20px;
+        }
+
+
+        .workflow-card {
+
+            padding:
+                25px;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius:
+                8px;
+
+            background:
+                #fafafa;
+        }
+
+
+        .workflow-number {
+
+            color:
+                var(--orange-dark);
+
+            font-size:
+                11px;
+
+            font-weight:
+                700;
+
+            letter-spacing:
+                0.5px;
+
+            margin-bottom:
+                14px;
+        }
+
+
+        .workflow-card h3 {
+
+            font-size:
+                21px;
+
+            margin-bottom:
+                10px;
+        }
+
+
+        .workflow-card p {
+
+            color:
+                var(--text-secondary);
+
+            font-size:
+                13px;
+
+            line-height:
+                1.65;
+
+            margin-bottom:
+                16px;
+        }
+
+
+        .workflow-list {
+
+            list-style:
+                none;
+        }
+
+
+        .workflow-list li {
+
+            color:
+                #444;
+
+            font-size:
+                12px;
+
+            padding:
+                7px 0;
+
+            border-bottom:
+                1px solid
+                #e6e8ea;
+        }
+
+
+        .workflow-list li:last-child {
+
+            border-bottom:
+                none;
+        }
+
+
+        /* =====================================================
+           SECURITY SECTION
+        ===================================================== */
+
+        .security-section {
+
+            background:
+                #f8f9fa;
+        }
+
+
+        .security-grid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(3,1fr);
+
+            gap:
+                18px;
+        }
+
+
+        .security-card {
+
+            background:
+                #ffffff;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius:
+                8px;
+
+            padding:
+                25px;
+
+            box-shadow:
+                0 2px 7px
+                rgba(0,0,0,0.05);
+        }
+
+
+        .security-type {
+
+            color:
+                var(--orange-dark);
+
+            font-size:
+                11px;
+
+            font-weight:
+                700;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                0.5px;
+
+            margin-bottom:
+                10px;
+        }
+
+
+        .security-card h3 {
+
+            font-size:
+                20px;
+
+            margin-bottom:
+                9px;
+        }
+
+
+        .security-card p {
+
+            color:
+                var(--text-secondary);
+
+            font-size:
+                13px;
+
+            line-height:
+                1.65;
+        }
+
+
+        /* =====================================================
+           CTA
+        ===================================================== */
+
+        .cta {
+
+            background:
+                linear-gradient(
+                    120deg,
+                    var(--navy),
+                    var(--navy-light)
+                );
+
+            color:
+                white;
+
+            text-align:
+                center;
+
+            padding:
+                68px 25px;
+        }
+
+
+        .cta-inner {
+
+            max-width:
+                760px;
+
+            margin:
+                0 auto;
+        }
+
+
+        .cta h2 {
+
+            font-size:
+                clamp(28px,4vw,40px);
+
+            line-height:
+                1.15;
+
+            margin-bottom:
+                13px;
+        }
+
+
+        .cta p {
+
+            color:
+                #d3d9de;
+
+            font-size:
+                14px;
+
+            line-height:
+                1.7;
+
+            margin-bottom:
+                25px;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+
+            background:
+                #0f141a;
+
+            color:
+                #b8c0c7;
+
+            padding:
+                35px 25px;
+        }
+
+
+        .footer-inner {
+
+            max-width:
+                1180px;
+
+            margin:
+                0 auto;
+
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+            gap:
+                20px;
+        }
+
+
+        .footer-logo {
+
+            color:
+                white;
+
+            font-size:
+                20px;
+
+            font-weight:
+                700;
+        }
+
+
+        .footer-logo span {
+
+            color:
+                var(--orange);
+        }
+
+
+        .footer-text {
+
+            text-align:
+                right;
+
+            font-size:
+                11px;
+
+            line-height:
+                1.6;
+        }
+
+
+        /* =====================================================
+           TABLET
+        ===================================================== */
+
+        @media (max-width: 950px) {
+
+            .nav-links {
+                display:
+                    none;
+            }
+
+
+            .hero {
+
+                min-height:
+                    720px;
+            }
+
+
+            .hero-inner {
+
+                grid-template-columns:
+                    1fr;
+
+                gap:
+                    30px;
+
+                padding:
+                    60px 25px 80px;
+            }
+
+
+            .hero-panel {
+
+                width:
+                    min(100%,500px);
+            }
+
+
+            .medical-grid,
+            .workflow-grid,
+            .security-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 600px) {
+
+            .navbar {
+
+                height:
+                    62px;
+
+                padding:
+                    0 18px;
+            }
+
+
+            .logo {
+
+                font-size:
+                    22px;
+            }
+
+
+            .nav-actions {
+
+                gap:
+                    7px;
+            }
+
+
+            .login-link {
+
+                padding:
+                    8px 11px;
+            }
+
+
+            .register-link {
+
+                display:
+                    none;
+            }
+
+
+            .hero {
+
+                min-height:
+                    790px;
+            }
+
+
+            .hero-image {
+
+                opacity:
+                    0.48;
+
+                background-position:
+                    60% center;
+
+                transform:
+                    scale(1.05);
+            }
+
+
+            .hero-overlay {
+
+                background:
+                    linear-gradient(
+                        90deg,
+                        rgba(244,246,247,0.93) 0%,
+                        rgba(244,246,247,0.82) 55%,
+                        rgba(244,246,247,0.63) 100%
+                    );
+            }
+
+
+            .hero-inner {
+
+                padding:
+                    50px 18px 75px;
+            }
+
+
+            .hero h1 {
+
+                font-size:
+                    38px;
+            }
+
+
+            .hero-description {
+
+                font-size:
+                    14px;
+            }
+
+
+            .hero-actions {
+
+                flex-direction:
+                    column;
+            }
+
+
+            .primary-button,
+            .secondary-button {
+
+                width:
+                    100%;
+
+                text-align:
+                    center;
+            }
+
+
+            .security-line {
+
+                display:
+                    none;
+            }
+
+
+            .hero-panel {
+
+                width:
+                    100%;
+            }
+
+
+            .section {
+
+                padding:
+                    55px 18px;
+            }
+
+
+            .medical-card-image {
+
+                height:
+                    220px;
+            }
+
+
+            .footer-inner {
+
+                flex-direction:
+                    column;
+
+                align-items:
+                    flex-start;
+            }
+
+
+            .footer-text {
+
+                text-align:
+                    left;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         NAVBAR
+    ===================================================== -->
+
+    <nav class="navbar">
+
+
+        <a
+            href="{% url 'home' %}"
+            class="logo"
+        >
+            Medi<span>Secure</span>
+        </a>
+
+
+        <div class="nav-links">
+
+            <a href="#platform">
+                Platform
+            </a>
+
+            <a href="#healthcare">
+                Healthcare
+            </a>
+
+            <a href="#security">
+                Security
+            </a>
+
+        </div>
+
+
+        <div class="nav-actions">
+
+
+            <a
+                href="{% url 'login' %}"
+                class="login-link"
+            >
+                Sign in
+            </a>
+
+
+            <a
+                href="{% url 'register' %}"
+                class="register-link"
+            >
+                Create account
+            </a>
+
+
+        </div>
+
+
+    </nav>
+
+
+
+    <!-- =====================================================
+         HERO
+    ===================================================== -->
+
+    <section class="hero">
+
+
+        <div class="hero-image"></div>
+
+        <div class="hero-overlay"></div>
+
+
+        <div class="hero-inner">
+
+
+            <!-- HERO TEXT -->
+
+            <div class="hero-content">
+
+
+                <span class="hero-label">
+                    Secure Medical Record Management
+                </span>
+
+
+                <h1>
+
+                    Healthcare records,
+                    <span>protected.</span>
+
+                </h1>
+
+
+                <p class="hero-description">
+
+                    MediSecure is a digital medical record
+                    management platform designed to connect
+                    appointments, clinical information, medical
+                    records, and prescriptions within a secure
+                    healthcare workflow.
+
+                </p>
+
+
+                <div class="hero-actions">
+
+
+                    <a
+                        href="{% url 'login' %}"
+                        class="primary-button"
+                    >
+                        Sign in to MediSecure
+                    </a>
+
+
+                    <a
+                        href="{% url 'register' %}"
+                        class="secondary-button"
+                    >
+                        Create an account
+                    </a>
+
+
+                </div>
+
+
+                <div class="security-line">
+
+                    <span>
+                        Protected medical information
+                    </span>
+
+                    <span class="security-divider"></span>
+
+                    <span>
+                        Role-based access
+                    </span>
+
+                    <span class="security-divider"></span>
+
+                    <span>
+                        Secure healthcare workflow
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PLATFORM PROTECTION
+            ================================================= -->
+
+            <div class="hero-panel">
+
+
+                <div class="hero-panel-title">
+                    Platform Protection
+                </div>
+
+
+                <div class="hero-status">
+
+
+                    <div>
+
+                        <div class="hero-status-name">
+                            Medical Records
+                        </div>
+
+                        <span class="hero-status-description">
+                            Sensitive diagnosis data
+                        </span>
+
+                    </div>
+
+
+                    <span class="hero-status-value">
+                        AES-256-GCM
+                    </span>
+
+
+                </div>
+
+
+                <div class="hero-status">
+
+
+                    <div>
+
+                        <div class="hero-status-name">
+                            Prescriptions
+                        </div>
+
+                        <span class="hero-status-description">
+                            Digital authenticity
+                        </span>
+
+                    </div>
+
+
+                    <span class="hero-status-value">
+                        Ed25519
+                    </span>
+
+
+                </div>
+
+
+                <div class="hero-status">
+
+
+                    <div>
+
+                        <div class="hero-status-name">
+                            Record Integrity
+                        </div>
+
+                        <span class="hero-status-description">
+                            Tamper detection
+                        </span>
+
+                    </div>
+
+
+                    <span class="hero-status-value">
+                        SHA-3-256
+                    </span>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         SIMPLE LINE
+    ===================================================== -->
+
+    <div class="section-divider"></div>
+
+
+
+    <!-- =====================================================
+         MEDISECURE PLATFORM
+    ===================================================== -->
+
+    <section
+        class="section"
+        id="platform"
+    >
+
+
+        <div class="section-heading">
+
+
+            <div class="section-label">
+                MediSecure Platform
+            </div>
+
+
+            <h2>
+                A digital foundation for healthcare information.
+            </h2>
+
+
+            <p>
+
+                MediSecure brings essential healthcare activities
+                together in one application while applying
+                security controls to sensitive medical information.
+
+            </p>
+
+
+        </div>
+
+
+
+        <div class="medical-grid">
+
+
+            <!-- =================================================
+                 MEDICAL RECORDS
+            ================================================= -->
+
+            <article class="medical-card records">
+
+
+                <img
+                    src="{% static 'clinic/RECORD.webp' %}"
+                    alt="Medical records and healthcare information"
+                    class="medical-card-image"
+                >
+
+
+                <div class="medical-content">
+
+
+                    <h3>
+                        Medical Records
+                    </h3>
+
+
+                    <p>
+
+                        Store and access diagnoses and clinical
+                        information through an authorized
+                        medical-record workflow.
+
+                    </p>
+
+
+                    <a
+                        href="{% url 'login' %}"
+                        class="learn-link"
+                    >
+                        Access the platform
+                    </a>
+
+
+                </div>
+
+
+            </article>
+
+
+
+            <!-- =================================================
+                 APPOINTMENTS
+            ================================================= -->
+
+            <article class="medical-card appointments">
+
+
+                <img
+                    src="{% static 'clinic/APPOINTMENT.avif' %}"
+                    alt="Healthcare appointment management"
+                    class="medical-card-image"
+                >
+
+
+                <div class="medical-content">
+
+
+                    <h3>
+                        Appointments
+                    </h3>
+
+
+                    <p>
+
+                        Patients can request appointments while
+                        doctors manage requests through the
+                        clinical workflow.
+
+                    </p>
+
+
+                    <a
+                        href="{% url 'login' %}"
+                        class="learn-link"
+                    >
+                        Manage appointments
+                    </a>
+
+
+                </div>
+
+
+            </article>
+
+
+
+            <!-- =================================================
+                 PRESCRIPTIONS
+            ================================================= -->
+
+            <article class="medical-card prescriptions">
+
+
+                <img
+                    src="{% static 'clinic/PRES.jpg' %}"
+                    alt="Medical prescription"
+                    class="medical-card-image"
+                >
+
+
+                <div class="medical-content">
+
+
+                    <h3>
+                        Prescriptions
+                    </h3>
+
+
+                    <p>
+
+                        Doctors can issue prescriptions through
+                        the medical-record workflow with
+                        digital-signature protection.
+
+                    </p>
+
+
+                    <a
+                        href="{% url 'login' %}"
+                        class="learn-link"
+                    >
+                        View secure workflow
+                    </a>
+
+
+                </div>
+
+
+            </article>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         HEALTHCARE WORKFLOW
+    ===================================================== -->
+
+    <section
+        class="workflow-section"
+        id="healthcare"
+    >
+
+
+        <div class="section">
+
+
+            <div class="section-heading">
+
+
+                <div class="section-label">
+                    Healthcare Workflow
+                </div>
+
+
+                <h2>
+                    One platform, three connected roles.
+                </h2>
+
+
+                <p>
+
+                    MediSecure provides role-specific functionality
+                    for patients, doctors, and administrators.
+
+                </p>
+
+
+            </div>
+
+
+
+            <div class="workflow-grid">
+
+
+                <!-- PATIENT -->
+
+                <article class="workflow-card">
+
+
+                    <div class="workflow-number">
+                        ROLE 01
+                    </div>
+
+
+                    <h3>
+                        Patient
+                    </h3>
+
+
+                    <p>
+
+                        Manage appointments and access healthcare
+                        information associated with your medical
+                        records.
+
+                    </p>
+
+
+                    <ul class="workflow-list">
+
+                        <li>
+                            Request appointments
+                        </li>
+
+                        <li>
+                            View medical records
+                        </li>
+
+                        <li>
+                            Access prescriptions
+                        </li>
+
+                        <li>
+                            Manage healthcare information
+                        </li>
+
+                    </ul>
+
+
+                </article>
+
+
+
+                <!-- DOCTOR -->
+
+                <article class="workflow-card">
+
+
+                    <div class="workflow-number">
+                        ROLE 02
+                    </div>
+
+
+                    <h3>
+                        Doctor
+                    </h3>
+
+
+                    <p>
+
+                        Manage appointments, create medical
+                        records, and issue secure prescriptions.
+
+                    </p>
+
+
+                    <ul class="workflow-list">
+
+                        <li>
+                            Review appointments
+                        </li>
+
+                        <li>
+                            Create medical records
+                        </li>
+
+                        <li>
+                            Issue prescriptions
+                        </li>
+
+                        <li>
+                            Verify digital signatures
+                        </li>
+
+                    </ul>
+
+
+                </article>
+
+
+
+                <!-- ADMIN -->
+
+                <article class="workflow-card">
+
+
+                    <div class="workflow-number">
+                        ROLE 03
+                    </div>
+
+
+                    <h3>
+                        Administrator
+                    </h3>
+
+
+                    <p>
+
+                        Monitor platform security and verify
+                        the integrity of protected medical records.
+
+                    </p>
+
+
+                    <ul class="workflow-list">
+
+                        <li>
+                            Manage system users
+                        </li>
+
+                        <li>
+                            Monitor security controls
+                        </li>
+
+                        <li>
+                            Verify SHA-3 hash chains
+                        </li>
+
+                        <li>
+                            Detect record tampering
+                        </li>
+
+                    </ul>
+
+
+                </article>
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         SECURITY
+    ===================================================== -->
+
+    <section
+        class="security-section"
+        id="security"
+    >
+
+
+        <div class="section">
+
+
+            <div class="section-heading">
+
+
+                <div class="section-label">
+                    Security Architecture
+                </div>
+
+
+                <h2>
+                    Security built into the healthcare workflow.
+                </h2>
+
+
+                <p>
+
+                    Different cryptographic mechanisms address
+                    different security requirements within
+                    MediSecure.
+
+                </p>
+
+
+            </div>
+
+
+
+            <div class="security-grid">
+
+
+                <article class="security-card">
+
+
+                    <div class="security-type">
+                        Confidentiality
+                    </div>
+
+
+                    <h3>
+                        AES-256-GCM
+                    </h3>
+
+
+                    <p>
+
+                        Sensitive diagnosis information is
+                        encrypted before being stored in the
+                        database.
+
+                    </p>
+
+
+                </article>
+
+
+
+                <article class="security-card">
+
+
+                    <div class="security-type">
+                        Authenticity
+                    </div>
+
+
+                    <h3>
+                        Ed25519
+                    </h3>
+
+
+                    <p>
+
+                        Doctor-issued prescriptions are digitally
+                        signed so their authenticity can be verified.
+
+                    </p>
+
+
+                </article>
+
+
+
+                <article class="security-card">
+
+
+                    <div class="security-type">
+                        Integrity
+                    </div>
+
+
+                    <h3>
+                        SHA-3-256
+                    </h3>
+
+
+                    <p>
+
+                        Cryptographic hashes and hash chains
+                        help detect unauthorized modifications
+                        to medical records.
+
+                    </p>
+
+
+                </article>
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CTA
+    ===================================================== -->
+
+    <section class="cta">
+
+
+        <div class="cta-inner">
+
+
+            <h2>
+                Secure healthcare information starts here.
+            </h2>
+
+
+            <p>
+
+                Access MediSecure to manage appointments,
+                medical records, and prescriptions through
+                a secure healthcare workflow.
+
+            </p>
+
+
+            <a
+                href="{% url 'login' %}"
+                class="primary-button"
+            >
+                Access MediSecure
+            </a>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ===================================================== -->
+
+    <footer>
+
+
+        <div class="footer-inner">
+
+
+            <div class="footer-logo">
+
+                Medi<span>Secure</span>
+
+            </div>
+
+
+            <div class="footer-text">
+
+                Secure Medical Record Management System
+
+                <br>
+
+                © 2026 MediSecure. Secure healthcare information platform.
+
+            </div>
+
+
+        </div>
+
+
+    </footer>
+
+
+</body>
+
+</html>

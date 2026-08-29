@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediSecure | Book Appointment</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, Helvetica, sans-serif; background: #f4f7f9; color: #111; min-height: 100vh; }
+
+        /* NAVBAR - EDGE TO EDGE */
+        .navbar { min-height: 64px; background: #131921; display: flex; align-items: center; justify-content: space-between; padding: 0 5vw; color: white; }
+        .logo { font-size: 25px; font-weight: bold; text-decoration: none; color: white; }
+        .logo span { color: #ff9900; }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a { color: #d7dce0; text-decoration: none; font-size: 14px; font-weight: bold; }
+        .nav-links a:hover { color: #ff9900; }
+        .nav-right { display: flex; align-items: center; gap: 22px; }
+        .user { color: #dddddd; font-size: 14px; }
+        .logout-button { background: transparent; border: 1px solid #ff9900; color: white; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; transition: 0.2s; }
+        .logout-button:hover { background: #ff9900; color: #111; }
+
+        /* MAIN CONTAINER */
+        .container { max-width: 1400px; margin: 40px auto; padding: 0 20px; }
+        
+        /* UNIFIED WORKSPACE PANEL */
+        .dashboard-panel {
+            background: white;
+            border: 1px solid #dcdfe3;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            overflow: hidden;
+        }
+
+        /* HEADER SECTION */
+        .panel-header {
+            padding: 45px 50px;
+            background: white;
+            border-bottom: 1px solid #eaeef2;
+        }
+        .panel-header h1 { font-size: 32px; margin-bottom: 8px; letter-spacing: -0.5px; color: #0f172a; }
+        .panel-header p { color: #475569; font-size: 16px; }
+
+        /* FORM SECTION */
+        .panel-form {
+            padding: 45px 50px;
+            background: #f8fafc;
+            border-bottom: 1px solid #eaeef2;
+        }
+        .form-title { font-size: 22px; margin-bottom: 25px; color: #0f172a; }
+        
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .full-width { grid-column: 1 / -1; }
+        
+        .form-group label { display: block; font-size: 15px; font-weight: bold; color: #1e293b; margin-bottom: 10px; }
+        .form-group input:not([type="hidden"]), 
+        .form-group select, 
+        .form-group textarea { 
+            width: 100%; padding: 15px 20px; border: 1px solid #cbd5e1; 
+            border-radius: 6px; font-size: 16px; font-family: inherit; transition: 0.2s; background: white;
+        }
+        .form-group input:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus { 
+            outline: none; border-color: #ff9900; box-shadow: 0 0 0 3px rgba(255,153,0,0.15); 
+        }
+        .form-group textarea { min-height: 140px; resize: vertical; }
+
+        /* CUSTOM TIME SELECTOR */
+        .time-select { display: flex; align-items: center; gap: 15px; }
+        .time-part { flex: 1; }
+        .time-separator { font-weight: bold; color: #475569; font-size: 22px; }
+
+        /* BUTTONS & ERRORS */
+        .submit-btn { display: inline-block; padding: 16px 32px; background: #ff9900; color: #111; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 15px; }
+        .submit-btn:hover { background: #e88b00; }
+        .form-errors { background: #fee2e2; color: #991b1b; padding: 18px; border-radius: 6px; margin-bottom: 30px; border: 1px solid #f87171; font-size: 15px; }
+
+        /* HISTORY SECTION */
+        .panel-history { padding: 45px 50px; background: white; }
+        .panel-history h2 { font-size: 22px; margin-bottom: 25px; color: #0f172a; }
+        
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        th { text-align: left; padding: 18px 20px; background: #f1f5f9; color: #475569; font-size: 13px; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; letter-spacing: 0.5px; }
+        td { padding: 22px 20px; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: 16px; vertical-align: middle; }
+        tr:hover td { background: #f8fafc; }
+        
+        .doctor-name { font-weight: bold; font-size: 17px; color: #0f172a; display: block; margin-bottom: 4px; }
+        .reason-text { max-width: 450px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #475569; }
+        
+        .status-badge { display: inline-block; padding: 8px 14px; border-radius: 4px; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-accepted { background: #dcfce7; color: #166534; }
+        .status-rejected { background: #fee2e2; color: #991b1b; }
+        .status-completed { background: #f1f5f9; color: #475569; }
+
+        .empty-state { text-align: center; padding: 50px; color: #64748b; font-size: 16px; }
+
+        @media (max-width: 950px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .panel-header, .panel-form, .panel-history { padding: 35px 25px; }
+            .time-select { flex-direction: column; align-items: stretch; }
+            .time-separator { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="{% url 'patient_dashboard' %}" class="logo">Medi<span>Secure</span></a>
+        
+        <div class="nav-links">
+            <a href="{% url 'patient_dashboard' %}">Dashboard</a>
+            <a href="{% url 'book_appointment' %}">Appointments</a>
+            <a href="{% url 'patient_medical_records' %}">Medical Records</a>
+        </div>
+
+        <div class="nav-right">
+            <span class="user">{{ request.user.username }}</span>
+            <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="logout-button">Logout</button>
+            </form>
+        </div>
+    </nav>
+
+    <main class="container">
+        
+        <div class="dashboard-panel">
+
+            <!-- HEADER -->
+            <header class="panel-header">
+                <h1>Book an Appointment</h1>
+                <p>Request a consultation with a healthcare professional and keep track of your visits.</p>
+            </header>
+
+            <!-- FORM SECTION -->
+            <section class="panel-form">
+                <h2 class="form-title">Request a Consultation</h2>
+
+                {% if form.non_field_errors %}
+                    <div class="form-errors">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <form method="POST" id="appointment-form">
+                    {% csrf_token %}
+
+                    <div class="form-grid">
+                        
+                        <div class="form-group full-width">
+                            <label for="{{ form.doctor.id_for_label }}">Select Doctor</label>
+                            {{ form.doctor }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.appointment_date.id_for_label }}">Appointment Date</label>
+                            {{ form.appointment_date }}
+                        </div>
+
+                        <div class="form-group">
+                            <label>Appointment Time</label>
+                            {{ form.appointment_time.as_hidden }}
+                            
+                            <div class="time-select">
+                                <select id="appointment_hour" class="time-part" required>
+                                    <option value="">Hour</option>
+                                    <option value="01">01</option><option value="02">02</option><option value="03">03</option>
+                                    <option value="04">04</option><option value="05">05</option><option value="06">06</option>
+                                    <option value="07">07</option><option value="08">08</option><option value="09">09</option>
+                                    <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+                                </select>
+                                <span class="time-separator">:</span>
+                                <select id="appointment_minute" class="time-part" required>
+                                    <option value="">Min</option>
+                                    <option value="00">00</option>
+                                    <option value="15">15</option>
+                                    <option value="30">30</option>
+                                    <option value="45">45</option>
+                                </select>
+                                <select id="appointment_period" class="time-part" required>
+                                    <option value="">AM / PM</option>
+                                    <option value="AM">AM</option>
+                                    <option value="PM">PM</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="{{ form.reason.id_for_label }}">Reason for Visit</label>
+                            {{ form.reason }}
+                        </div>
+
+                        <div class="form-group full-width">
+                            <button type="submit" class="submit-btn">Submit Request</button>
+                        </div>
+
+                    </div>
+                </form>
+            </section>
+
+            <!-- HISTORY SECTION -->
+            <section class="panel-history">
+                <h2>My Appointments</h2>
+
+                {% if appointments %}
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Doctor</th>
+                                    <th>Date & Time</th>
+                                    <th>Reason</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for appointment in appointments %}
+                                    <tr>
+                                        <td>
+                                            <span class="doctor-name">Dr. {{ appointment.doctor.username }}</span>
+                                        </td>
+                                        <td>
+                                            <strong>{{ appointment.appointment_date|date:"d M Y" }}</strong><br>
+                                            <span style="color: #64748b; font-size: 14px;">{{ appointment.appointment_time|time:"g:i A" }}</span>
+                                        </td>
+                                        <td>
+                                            <div class="reason-text">
+                                                {{ appointment.reason|default:"Not provided" }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge 
+                                                {% if appointment.status == 'PENDING' %}status-pending
+                                                {% elif appointment.status == 'ACCEPTED' %}status-accepted
+                                                {% elif appointment.status == 'REJECTED' %}status-rejected
+                                                {% elif appointment.status == 'COMPLETED' %}status-completed
+                                                {% endif %}">
+                                                {{ appointment.get_status_display }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <h3>No appointments scheduled</h3>
+                        <p>Your appointment history will appear here once you submit a request.</p>
+                    </div>
+                {% endif %}
+            </section>
+
+        </div>
+    </main>
+
+    <!-- CUSTOM TIME SELECTOR SCRIPT -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("appointment-form");
+            const hiddenTime = document.getElementById("id_appointment_time");
+            const hour = document.getElementById("appointment_hour");
+            const minute = document.getElementById("appointment_minute");
+            const period = document.getElementById("appointment_period");
+
+            if (hiddenTime && hiddenTime.value) {
+                const parts = hiddenTime.value.split(":");
+                if (parts.length >= 2) {
+                    let h = parseInt(parts[0], 10);
+                    const m = parts[1];
+                    let p = "AM";
+
+                    if (h >= 12) { p = "PM"; }
+                    if (h === 0) { h = 12; }
+                    else if (h > 12) { h -= 12; }
+
+                    hour.value = String(h).padStart(2, "0");
+                    minute.value = m;
+                    period.value = p;
+                }
+            }
+
+            function updateHiddenTime() {
+                if (!hour.value || !minute.value || !period.value) {
+                    if (hiddenTime) { hiddenTime.value = ""; }
+                    return;
+                }
+
+                let h = parseInt(hour.value, 10);
+                if (period.value === "PM" && h !== 12) { h += 12; }
+                if (period.value === "AM" && h === 12) { h = 0; }
+
+                const formatted = String(h).padStart(2, "0") + ":" + minute.value;
+                if (hiddenTime) { hiddenTime.value = formatted; }
+            }
+
+            hour.addEventListener("change", updateHiddenTime);
+            minute.addEventListener("change", updateHiddenTime);
+            period.addEventListener("change", updateHiddenTime);
+
+            form.addEventListener("submit", function (event) {
+                updateHiddenTime();
+                if (!hiddenTime || !hiddenTime.value) {
+                    event.preventDefault();
+                    alert("Please select an appointment time.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

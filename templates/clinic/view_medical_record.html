@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MediSecure | Medical Record</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f3f6f8;
+            color: #102a43;
+        }
+
+        .navbar {
+            min-height: 64px;
+            background: #0b2740;
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 36px;
+
+            border-bottom: 3px solid #f5a400;
+        }
+
+        .logo {
+            color: white;
+            text-decoration: none;
+            font-size: 25px;
+            font-weight: 700;
+        }
+
+        .logo span {
+            color: #f5a400;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            color: #e6edf3;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .nav-links a:hover {
+            color: #f5a400;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .username {
+            color: #dbe7f0;
+            font-size: 14px;
+        }
+
+        .logout-button {
+            background: transparent;
+            color: white;
+
+            border: 1px solid #f5a400;
+            border-radius: 5px;
+
+            padding: 9px 18px;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .logout-button:hover {
+            background: #f5a400;
+            color: #102a43;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+
+            margin: 0 auto;
+
+            padding: 42px 45px 70px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .eyebrow {
+            color: #087f8c;
+            font-size: 13px;
+            font-weight: 700;
+
+            letter-spacing: 1px;
+            text-transform: uppercase;
+
+            margin-bottom: 8px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            color: #102a43;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #52677a;
+            font-size: 16px;
+        }
+
+        .record {
+            background: white;
+
+            border: 1px solid #cbd8e2;
+            border-radius: 10px;
+
+            overflow: hidden;
+
+            box-shadow: 0 4px 16px rgba(16, 42, 67, 0.07);
+        }
+
+        .record-header {
+            padding: 24px 30px;
+
+            background: #f8fbfd;
+
+            border-bottom: 1px solid #d7e1e8;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .patient-name {
+            font-size: 21px;
+            font-weight: 700;
+            color: #102a43;
+        }
+
+        .record-date {
+            color: #52677a;
+            font-size: 14px;
+        }
+
+        .record-row {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+
+            min-height: 105px;
+
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        .record-label {
+            padding: 30px;
+
+            background: #f8fafc;
+
+            color: #52677a;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+        }
+
+        .record-content {
+            padding: 30px;
+
+            color: #102a43;
+
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .diagnosis {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .prescription {
+            padding: 18px 20px;
+
+            margin-bottom: 14px;
+
+            border: 1px solid #d6e1e8;
+            border-left: 4px solid #087f8c;
+
+            border-radius: 7px;
+
+            background: #fbfdfe;
+        }
+
+        .prescription:last-child {
+            margin-bottom: 0;
+        }
+
+        .medicine {
+            font-size: 18px;
+            font-weight: 700;
+
+            margin-bottom: 6px;
+        }
+
+        .instructions {
+            color: #52677a;
+            margin-bottom: 12px;
+        }
+
+        .signed {
+            display: inline-block;
+
+            padding: 6px 11px;
+
+            border-radius: 20px;
+
+            background: #e7f6ed;
+            color: #18794e;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .empty {
+            color: #66788a;
+        }
+
+        .actions {
+            padding: 24px 30px;
+
+            display: flex;
+            gap: 14px;
+
+            border-bottom: 1px solid #d7e1e8;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 11px 20px;
+
+            border-radius: 6px;
+
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .primary {
+            background: #f5a400;
+            color: #102a43;
+        }
+
+        .primary:hover {
+            background: #e69500;
+        }
+
+        .secondary {
+            background: #0b7a83;
+            color: white;
+        }
+
+        .secondary:hover {
+            background: #086a72;
+        }
+
+        .security {
+            padding: 18px 30px;
+
+            background: #f8fbfd;
+
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 28px;
+
+            color: #52677a;
+
+            font-size: 13px;
+        }
+
+        @media (max-width: 800px) {
+
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .container {
+                padding: 30px 20px;
+            }
+
+            .record-row {
+                grid-template-columns: 1fr;
+            }
+
+            .record-label {
+                padding-bottom: 10px;
+            }
+
+            .record-content {
+                padding-top: 10px;
+            }
+
+            .record-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <a href="{% url 'doctor_dashboard' %}" class="logo">
+        Medi<span>Secure</span>
+    </a>
+
+    <div class="nav-links">
+        <a href="{% url 'doctor_dashboard' %}">
+            Dashboard
+        </a>
+
+        <a href="{% url 'doctor_appointments' %}">
+            Appointments
+        </a>
+    </div>
+
+    <div class="nav-right">
+
+        <span class="username">
+            {{ request.user.username }}
+        </span>
+
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+
+            <button type="submit" class="logout-button">
+                Logout
+            </button>
+        </form>
+
+    </div>
+
+</nav>
+
+
+<main class="container">
+
+    <section class="page-header">
+
+        <div class="eyebrow">
+            Clinical Record
+        </div>
+
+        <h1>
+            Medical Record
+        </h1>
+
+        <p>
+            Review the patient's diagnosis, clinical notes, and prescriptions.
+        </p>
+
+    </section>
+
+
+    <section class="record">
+
+        <header class="record-header">
+
+            <div class="patient-name">
+                Patient:
+                {{ appointment.patient.get_full_name|default:appointment.patient.username }}
+            </div>
+
+            <div class="record-date">
+                {{ record.created_at }}
+            </div>
+
+        </header>
+
+
+        <!-- DIAGNOSIS -->
+
+        <div class="record-row">
+
+            <div class="record-label">
+                Diagnosis
+            </div>
+
+            <div class="record-content diagnosis">
+
+                {{ diagnosis|default:"No diagnosis available." }}
+
+            </div>
+
+        </div>
+
+
+        <!-- CLINICAL NOTES -->
+
+        <div class="record-row">
+
+            <div class="record-label">
+                Clinical Notes
+            </div>
+
+            <div class="record-content">
+
+                {{ record.clinical_notes|default:"No clinical notes available." }}
+
+            </div>
+
+        </div>
+
+
+        <!-- PRESCRIPTIONS -->
+
+        <div class="record-row">
+
+            <div class="record-label">
+                Prescriptions
+            </div>
+
+            <div class="record-content">
+
+                {% if prescriptions %}
+
+                    {% for prescription in prescriptions %}
+
+                        <div class="prescription">
+
+                            <div class="medicine">
+                                {{ prescription.medication }}
+                            </div>
+
+                            <div class="instructions">
+
+                                {{ prescription.instructions|default:"No instructions provided." }}
+
+                            </div>
+
+                            <span class="signed">
+                                Digitally signed with Ed25519
+                            </span>
+
+                        </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="empty">
+                        No prescriptions issued for this record.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- ACTIONS -->
+
+        <div class="actions">
+
+            <a
+                href="{% url 'create_prescription' appointment.id %}"
+                class="button primary"
+            >
+                Issue Prescription
+            </a>
+
+            <a
+                href="{% url 'verify_medical_record' appointment.id %}"
+                class="button secondary"
+            >
+                Verify Medical Record
+            </a>
+
+        </div>
+
+
+        <!-- SECURITY -->
+
+        <div class="security">
+
+            <span>
+                🔐 Diagnosis encrypted with AES-256-GCM
+            </span>
+
+            <span>
+                ✍️ Prescription signed with Ed25519
+            </span>
+
+            <span>
+                🔗 Record protected by SHA-3 hash chain
+            </span>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

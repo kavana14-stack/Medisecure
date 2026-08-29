@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>MediSecure | Hash Chain Verification</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #eaeded;
+        }
+
+        .navbar {
+            height: 64px;
+            background: #131921;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            color: white;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #ff9900;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+        }
+
+        h1 {
+            margin-bottom: 25px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 18px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .failure {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 18px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .record {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .valid {
+            color: #155724;
+            font-weight: bold;
+        }
+
+        .invalid {
+            color: #721c24;
+            font-weight: bold;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 20px;
+            background: #ff9900;
+            color: #111;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Medi<span>Secure</span>
+        </div>
+
+    </nav>
+
+    <main class="container">
+
+        <div class="card">
+
+            <h1>
+                🔗 SHA-3 Hash Chain Verification
+            </h1>
+
+            {% if chain_valid %}
+
+                <div class="success">
+
+                    ✅ HASH CHAIN VERIFIED SUCCESSFULLY
+
+                    <br>
+
+                    <span style="font-size: 14px;">
+                        All medical records passed the integrity check.
+                    </span>
+
+                </div>
+
+            {% else %}
+
+                <div class="failure">
+
+                    ❌ HASH CHAIN INTEGRITY CHECK FAILED
+
+                    <br>
+
+                    <span style="font-size: 14px;">
+                        One or more medical records may have been modified.
+                    </span>
+
+                </div>
+
+            {% endif %}
+
+
+            {% for result in results %}
+
+                <div class="record">
+
+                    <strong>
+                        Medical Record #{{ result.id }}
+                    </strong>
+
+                    {% if result.valid %}
+
+                        <span class="valid">
+                            ✅ VALID
+                        </span>
+
+                    {% else %}
+
+                        <span class="invalid">
+                            ❌ BROKEN
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            {% empty %}
+
+                <p>
+                    No medical records found.
+                </p>
+
+            {% endfor %}
+
+
+            <a
+                href="{% url 'security_center' %}"
+                class="button"
+            >
+                ← Back to Security Center
+            </a>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

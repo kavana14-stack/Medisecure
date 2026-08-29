@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediSecure | Admin Dashboard</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, Helvetica, sans-serif; background: #ffffff; color: #111; min-height: 100vh; }
+
+        /* NAVBAR - EDGE TO EDGE */
+        .navbar { min-height: 64px; background: #131921; display: flex; align-items: center; justify-content: space-between; padding: 0 5vw; color: white; }
+        .logo { font-size: 25px; font-weight: bold; text-decoration: none; color: white; }
+        .logo span { color: #ff9900; }
+        .nav-right { display: flex; align-items: center; gap: 22px; }
+        .user { color: #dddddd; font-size: 14px; }
+        .logout-button { background: transparent; border: 1px solid #ff9900; color: white; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; transition: 0.2s; }
+        .logout-button:hover { background: #ff9900; color: #111; }
+
+        /* MAIN CONTAINER - FULL WIDTH */
+        .container { width: 100%; max-width: 100%; margin: 0; padding: 0; }
+
+        /* HEADER SECTION */
+        .panel-header {
+            padding: 50px 5vw;
+            background: white;
+            border-bottom: 1px solid #eaeef2;
+        }
+        .panel-header h1 { font-size: 32px; margin-bottom: 8px; letter-spacing: -0.5px; }
+        .panel-header p { color: #667085; font-size: 16px; }
+
+        /* SUMMARY SECTION - EDGE TO EDGE */
+        .panel-summary { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            background: #f8fafc; 
+            padding: 40px 5vw; 
+            border-bottom: 1px solid #eaeef2;
+        }
+        .summary-item { text-align: left; }
+        .summary-label { font-size: 12px; color: #667085; margin-bottom: 8px; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; }
+        .summary-value { font-size: 26px; font-weight: bold; color: #0f172a; }
+        .status-active { color: #166534; }
+
+        /* ACTION LIST (SEAMLESS ROWS) */
+        .action-list {
+            background: white;
+        }
+        .action-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            padding: 45px 5vw; 
+            border-bottom: 1px solid #eaeef2; 
+            transition: background 0.2s; 
+        }
+        .action-item:hover { background: #fdfdfd; }
+        
+        .action-text { max-width: 70%; }
+        .item-tag { display: inline-block; margin-bottom: 12px; padding: 4px 10px; border-radius: 4px; background: #f1f5f9; color: #475569; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+        .action-text h2 { font-size: 22px; margin-bottom: 10px; color: #0f172a; }
+        .action-text p { color: #475569; line-height: 1.6; font-size: 15px; }
+
+        /* BUTTONS */
+        .button { display: inline-block; padding: 13px 24px; background: #ff9900; color: #111; text-decoration: none; border-radius: 5px; font-size: 14px; font-weight: bold; border: 1px solid #e88b00; transition: 0.2s; white-space: nowrap; }
+        .button:hover { background: #e88b00; }
+        .secondary-button { display: inline-block; padding: 13px 24px; background: #1e293b; color: white; text-decoration: none; border-radius: 5px; font-size: 14px; font-weight: bold; transition: 0.2s; white-space: nowrap; }
+        .secondary-button:hover { background: #0f172a; }
+
+        /* SECURITY OVERVIEW FOOTER - EDGE TO EDGE */
+        .panel-security { 
+            padding: 50px 5vw 80px 5vw; 
+            background: #f8fafc; 
+        }
+        .panel-security h2 { font-size: 20px; margin-bottom: 8px; color: #0f172a; }
+        .security-description { color: #667085; font-size: 14px; margin-bottom: 25px; }
+        
+        .security-items { display: flex; justify-content: space-between; gap: 20px; }
+        .security-module { flex: 1; background: white; border: 1px solid #eaeef2; border-radius: 6px; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .security-name { font-weight: bold; font-size: 15px; color: #0f172a; }
+        .security-status { display: inline-block; padding: 5px 10px; background: #dcfce7; color: #166534; border-radius: 4px; font-size: 11px; font-weight: bold; letter-spacing: 0.5px; }
+
+        @media (max-width: 950px) {
+            .panel-header, .panel-summary, .action-item, .panel-security { padding: 30px 5vw; }
+            .panel-summary, .action-item, .security-items { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .action-text { max-width: 100%; margin-bottom: 15px; }
+            .security-module { width: 100%; }
+            .button, .secondary-button { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="{% url 'admin_dashboard' %}" class="logo">Medi<span>Secure</span></a>
+
+        <div class="nav-right">
+            <span class="user">Administrator</span>
+            <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="logout-button">Logout</button>
+            </form>
+        </div>
+    </nav>
+
+    <main class="container">
+        
+        <!-- HEADER ROW -->
+        <header class="panel-header">
+            <h1>System Administration</h1>
+            <p>Manage users, monitor security, and verify medical record integrity from your central workspace.</p>
+        </header>
+
+        <!-- SUMMARY ROW -->
+        <div class="panel-summary">
+            <div class="summary-item">
+                <div class="summary-label">Account Role</div>
+                <div class="summary-value">Administrator</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-label">Data Protection</div>
+                <div class="summary-value status-active">Active</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-label">Cryptographic Security</div>
+                <div class="summary-value status-active">Active</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-label">System Integrity</div>
+                <div class="summary-value status-active">Verified</div>
+            </div>
+        </div>
+
+        <!-- ACTION LIST -->
+        <div class="action-list">
+            
+            <div class="action-item">
+                <div class="action-text">
+                    <span class="item-tag">Administration</span>
+                    <h2>User Management</h2>
+                    <p>Manage patient and doctor accounts within the MediSecure system. Assign roles and control access privileges.</p>
+                </div>
+                <a href="/admin/" class="secondary-button">Manage Users</a>
+            </div>
+
+            <div class="action-item">
+                <div class="action-text">
+                    <span class="item-tag">Security</span>
+                    <h2>Security Center</h2>
+                    <p>Monitor confidentiality, authenticity, and integrity protection mechanisms running across the healthcare platform.</p>
+                </div>
+                <a href="{% url 'security_center' %}" class="button">Open Security Center</a>
+            </div>
+
+            <div class="action-item">
+                <div class="action-text">
+                    <span class="item-tag">Integrity</span>
+                    <h2>Hash Chain Verification</h2>
+                    <p>Verify SHA-3 medical record hashes to detect any unauthorized modifications or internal database tampering.</p>
+                </div>
+                <a href="{% url 'verify_chain' %}" class="secondary-button">Verify Hash Chain</a>
+            </div>
+
+        </div>
+
+        <!-- SECURITY OVERVIEW ROW -->
+        <footer class="panel-security">
+            <h2>Security Overview</h2>
+            <p class="security-description">Current cryptographic protection mechanisms implemented in MediSecure.</p>
+            
+            <div class="security-items">
+                <div class="security-module">
+                    <span class="security-name">AES-256-GCM</span>
+                    <span class="security-status">ACTIVE</span>
+                </div>
+                <div class="security-module">
+                    <span class="security-name">Ed25519</span>
+                    <span class="security-status">ACTIVE</span>
+                </div>
+                <div class="security-module">
+                    <span class="security-name">SHA-3-256</span>
+                    <span class="security-status">ACTIVE</span>
+                </div>
+                <div class="security-module">
+                    <span class="security-name">Hash Chain</span>
+                    <span class="security-status">VERIFIED</span>
+                </div>
+            </div>
+        </footer>
+
+    </main>
+
+</body>
+
+</html>

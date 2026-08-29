@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>MediSecure | Medical Record</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #eaeded;
+        }
+
+        .navbar {
+            height: 64px;
+
+            background: #131921;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 40px;
+
+            color: white;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #ff9900;
+        }
+
+        .container {
+            max-width: 850px;
+
+            margin: 40px auto;
+
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+
+            border: 1px solid #ddd;
+
+            border-radius: 8px;
+
+            padding: 30px;
+
+            box-shadow:
+                0 3px 10px
+                rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            color: #111;
+
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+
+            margin-bottom: 25px;
+        }
+
+        .patient-info {
+            background: #f7f7f7;
+
+            border: 1px solid #ddd;
+
+            border-radius: 6px;
+
+            padding: 18px;
+
+            margin-bottom: 25px;
+
+            line-height: 1.8;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+
+            font-weight: bold;
+
+            color: #111;
+
+            margin-bottom: 8px;
+        }
+
+        textarea {
+            width: 100%;
+
+            min-height: 120px;
+
+            padding: 12px;
+
+            border: 1px solid #888;
+
+            border-radius: 5px;
+
+            font-family: Arial, Helvetica, sans-serif;
+
+            font-size: 15px;
+
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+
+            border: 2px solid #ff9900;
+        }
+
+        .submit-btn {
+            width: 100%;
+
+            padding: 14px;
+
+            border: none;
+
+            border-radius: 5px;
+
+            background: #ff9900;
+
+            color: #111;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #e88b00;
+        }
+
+        .error {
+            background: #ffe5e5;
+
+            color: #b00020;
+
+            padding: 12px;
+
+            border-radius: 5px;
+
+            margin-bottom: 20px;
+        }
+
+        .security-note {
+            margin-top: 20px;
+
+            padding: 15px;
+
+            background: #f3f3f3;
+
+            border-left: 4px solid #ff9900;
+
+            color: #555;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<nav class="navbar">
+
+    <div class="logo">
+        Medi<span>Secure</span>
+    </div>
+
+    <div>
+        Doctor Portal
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>
+            Create Medical Record
+        </h1>
+
+        <p class="subtitle">
+            Securely record the patient's diagnosis and clinical notes.
+        </p>
+
+
+        <div class="patient-info">
+
+            <strong>Patient:</strong>
+            {{ appointment.patient.username }}
+
+            <br>
+
+            <strong>Appointment Date:</strong>
+            {{ appointment.appointment_date }}
+
+            <br>
+
+            <strong>Appointment Time:</strong>
+            {{ appointment.appointment_time }}
+
+        </div>
+
+
+        {% if error %}
+
+            <div class="error">
+                {{ error }}
+            </div>
+
+        {% endif %}
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <div class="form-group">
+
+                <label for="diagnosis">
+                    Diagnosis
+                </label>
+
+                <textarea
+                    id="diagnosis"
+                    name="diagnosis"
+                    placeholder="Enter patient's diagnosis..."
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="clinical_notes">
+                    Clinical Notes
+                </label>
+
+                <textarea
+                    id="clinical_notes"
+                    name="clinical_notes"
+                    placeholder="Enter clinical notes..."
+                ></textarea>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="submit-btn"
+            >
+                🔒 Save Secure Medical Record
+            </button>
+
+        </form>
+
+
+        <div class="security-note">
+
+            🔐 <strong>Security:</strong>
+            The diagnosis is encrypted using AES-256-GCM
+            before it is stored in the database.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>
