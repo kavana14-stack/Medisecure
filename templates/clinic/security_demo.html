@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>MediSecure | Security Demonstration</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f1f5f9;
+            color: #111827;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            height: 64px;
+            background: #131921;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 36px;
+            color: white;
+            border-bottom: 3px solid #ff9900;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #ff9900;
+        }
+
+        .dashboard-link {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .dashboard-link:hover {
+            color: #ff9900;
+        }
+
+        /* ================= MAIN ================= */
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 35px 25px 70px;
+        }
+
+        .header {
+            margin-bottom: 28px;
+        }
+
+        .header-label {
+            color: #0088a8;
+            font-weight: bold;
+            font-size: 13px;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .header h1 {
+            margin: 0 0 8px;
+            font-size: 30px;
+            color: #102a43;
+        }
+
+        .header p {
+            margin: 0;
+            color: #58708a;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ================= CARD ================= */
+
+        .card {
+            background: white;
+            border: 1px solid #d9e0e7;
+            border-radius: 9px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow:
+                0 3px 10px rgba(0,0,0,0.07);
+        }
+
+        .algorithm-tag {
+            display: inline-block;
+            background: #26384a;
+            color: white;
+            padding: 7px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            letter-spacing: .5px;
+        }
+
+        .card h2 {
+            margin: 0 0 10px;
+            color: #102a43;
+            font-size: 23px;
+        }
+
+        .description {
+            color: #334e68;
+            font-size: 15px;
+            margin-bottom: 18px;
+            line-height: 1.6;
+        }
+
+        /* ================= INPUT ================= */
+
+        textarea {
+            width: 100%;
+            min-height: 115px;
+            resize: vertical;
+
+            border: 1px solid #bcc7d1;
+            border-radius: 6px;
+
+            padding: 14px;
+
+            font-family:
+                "Courier New",
+                monospace;
+
+            font-size: 14px;
+
+            color: #111827;
+            background: white;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #0088a8;
+
+            box-shadow:
+                0 0 0 2px
+                rgba(0,136,168,0.12);
+        }
+
+        /* ================= BUTTONS ================= */
+
+        .button-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: none;
+            border-radius: 5px;
+
+            padding: 12px 20px;
+
+            font-size: 13px;
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .primary {
+            background: #ff9900;
+            color: #111;
+        }
+
+        .primary:hover {
+            background: #e88b00;
+        }
+
+        .secondary {
+            background: #334e68;
+            color: white;
+        }
+
+        .secondary:hover {
+            background: #243b53;
+        }
+
+        /* ================= RESULT ================= */
+
+        .result {
+            display: none;
+
+            margin-top: 20px;
+
+            background: #f8fafc;
+
+            border: 1px solid #d4dce5;
+
+            border-radius: 7px;
+
+            padding: 21px;
+        }
+
+        .flow {
+            text-align: center;
+
+            font-weight: bold;
+
+            color: #17324d;
+
+            background: #edf4f8;
+
+            border-radius: 6px;
+
+            padding: 15px;
+
+            margin-bottom: 20px;
+
+            line-height: 1.8;
+        }
+
+        .output {
+            background: #111827;
+
+            color: #e5edf5;
+
+            padding: 14px;
+
+            border-radius: 5px;
+
+            margin: 7px 0 17px;
+
+            font-family:
+                "Courier New",
+                monospace;
+
+            font-size: 13px;
+
+            white-space: pre-wrap;
+
+            word-break: break-word;
+
+            overflow-wrap: anywhere;
+        }
+
+        /* ================= SUCCESS ================= */
+
+        .success {
+            color: #16803c;
+
+            background: #e8f7ee;
+
+            border: 1px solid #b9e5c8;
+
+            padding: 14px;
+
+            border-radius: 5px;
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            margin-top: 15px;
+        }
+
+        /* ================= FAILURE ================= */
+
+        .failure {
+            color: #b42318;
+
+            background: #fff0ef;
+
+            border: 1px solid #f0b9b5;
+
+            padding: 14px;
+
+            border-radius: 5px;
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            margin-top: 15px;
+        }
+
+        /* ================= INFORMATION ================= */
+
+        .info {
+            color: #334e68;
+            line-height: 1.7;
+            margin-top: 12px;
+        }
+
+        .demo-note {
+            background: #fffaf0;
+
+            border-left:
+                4px solid #ff9900;
+
+            padding: 15px 17px;
+
+            margin-top: 18px;
+
+            color: #4a3b20;
+
+            line-height: 1.7;
+
+            border-radius: 3px;
+        }
+
+        .demo-note strong {
+            color: #26384a;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 700px) {
+
+            .navbar {
+                padding: 0 18px;
+            }
+
+            .container {
+                padding: 25px 14px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 25px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        Medi<span>Secure</span>
+    </div>
+
+    <a
+        href="{% url 'patient_dashboard' %}"
+        class="dashboard-link"
+    >
+        ← Dashboard
+    </a>
+
+</nav>
+
+
+<main class="container">
+
+
+    <!-- =================================================
+         HEADER
+    ================================================= -->
+
+    <section class="header">
+
+        <div class="header-label">
+            SECURITY DEMONSTRATION
+        </div>
+
+        <h1>
+            🔐 Cryptography Security Demonstration
+        </h1>
+
+        <p>
+            Live demonstration of AES-256-GCM,
+            Ed25519 digital signatures, and
+            SHA-3-256 hashing used in MediSecure.
+        </p>
+
+    </section>
+
+
+    <!-- =================================================
+         AES-256-GCM
+    ================================================= -->
+
+    <section class="card">
+
+        <span class="algorithm-tag">
+            ALGORITHM 1
+        </span>
+
+        <h2>
+            🔐 AES-256-GCM — Encryption
+        </h2>
+
+        <p class="description">
+
+            AES-256-GCM protects confidential medical
+            information by converting readable plaintext
+            into encrypted ciphertext.
+
+        </p>
+
+
+        <textarea id="aesData">Patient diagnosis: Seasonal allergic rhinitis</textarea>
+
+
+        <div class="button-row">
+
+            <button
+                class="primary"
+                onclick="runAES()"
+            >
+                🔐 ENCRYPT &amp; DECRYPT
+            </button>
+
+        </div>
+
+
+        <div
+            id="aesResult"
+            class="result"
+        ></div>
+
+    </section>
+
+
+    <!-- =================================================
+         ED25519
+    ================================================= -->
+
+    <section class="card">
+
+        <span class="algorithm-tag">
+            ALGORITHM 2
+        </span>
+
+        <h2>
+            ✍️ Ed25519 — Digital Signature
+        </h2>
+
+        <p class="description">
+
+            Ed25519 is used to digitally sign prescription
+            information and verify that the prescription
+            has not been changed after signing.
+
+        </p>
+
+
+        <textarea id="edData">PARACETAMOL 500MG
+Take one tablet after food</textarea>
+
+
+        <div class="button-row">
+
+            <button
+                class="primary"
+                onclick="runEd25519()"
+            >
+                🔎 SCAN &amp; VERIFY
+            </button>
+
+
+            <button
+                class="secondary"
+                onclick="resetEd25519()"
+            >
+                ↻ NEW PRESCRIPTION
+            </button>
+
+        </div>
+
+
+        <div
+            id="edResult"
+            class="result"
+        ></div>
+
+
+        <div class="demo-note">
+
+            <strong>Live demonstration:</strong>
+
+            <br><br>
+
+            First click
+            <strong>SCAN &amp; VERIFY</strong>
+            without changing the prescription.
+
+            <br><br>
+
+            The system creates the original Ed25519
+            digital signature and verifies it.
+
+            <br><br>
+
+            You should see:
+
+            <strong>✓ SIGNATURE VALID</strong>
+
+            <br><br>
+
+            Now manually add a full stop
+            <strong>.</strong>
+            to the prescription.
+
+            <br><br>
+
+            Do not generate a new signature.
+
+            Click
+            <strong>SCAN &amp; VERIFY</strong>
+            again.
+
+            <br><br>
+
+            The original signature is checked against
+            the modified prescription.
+
+            <br><br>
+
+            Expected result:
+
+            <strong>✗ SIGNATURE INVALID</strong>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         SHA-3
+    ================================================= -->
+
+    <section class="card">
+
+        <span class="algorithm-tag">
+            ALGORITHM 3
+        </span>
+
+        <h2>
+            #️⃣ SHA-3-256 — Data Integrity
+        </h2>
+
+        <p class="description">
+
+            SHA-3-256 generates a cryptographic fingerprint
+            of the medical record. Any change in the data
+            produces a different hash.
+
+        </p>
+
+
+        <textarea id="shaData">Clinical Notes:
+Patient reports intermittent nasal congestion and sneezing.</textarea>
+
+
+        <div class="button-row">
+
+            <button
+                class="primary"
+                onclick="runSHA3()"
+            >
+                🔎 GENERATE &amp; VERIFY HASH
+            </button>
+
+
+            <button
+                class="secondary"
+                onclick="resetSHA3()"
+            >
+                ↻ NEW RECORD
+            </button>
+
+        </div>
+
+
+        <div
+            id="shaResult"
+            class="result"
+        ></div>
+
+
+        <div class="demo-note">
+
+            <strong>Live demonstration:</strong>
+
+            <br><br>
+
+            First click
+            <strong>GENERATE &amp; VERIFY HASH</strong>
+            with the original clinical notes.
+
+            <br><br>
+
+            The system stores the original SHA-3-256
+            hash for this demonstration.
+
+            <br><br>
+
+            Then manually change the clinical notes.
+
+            For example, add one full stop
+            <strong>.</strong>
+
+            <br><br>
+
+            Click
+            <strong>GENERATE &amp; VERIFY HASH</strong>
+            again.
+
+            <br><br>
+
+            The new hash will be compared with the
+            original hash.
+
+            <br><br>
+
+            Expected result:
+
+            <strong>✗ HASH MISMATCH — DATA HAS BEEN MODIFIED</strong>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<script>
+
+
+/* ==========================================================
+   CSRF TOKEN
+========================================================== */
+
+function getCookie(name) {
+
+    let cookieValue = null;
+
+
+    if (
+        document.cookie &&
+        document.cookie !== ""
+    ) {
+
+        const cookies =
+            document.cookie.split(";");
+
+
+        for (
+            let i = 0;
+            i < cookies.length;
+            i++
+        ) {
+
+            const cookie =
+                cookies[i].trim();
+
+
+            if (
+                cookie.substring(
+                    0,
+                    name.length + 1
+                ) ===
+                (name + "=")
+            ) {
+
+                cookieValue =
+                    decodeURIComponent(
+                        cookie.substring(
+                            name.length + 1
+                        )
+                    );
+
+                break;
+
+            }
+
+        }
+
+    }
+
+
+    return cookieValue;
+
+}
+
+
+/* ==========================================================
+   COMMON REQUEST
+========================================================== */
+
+async function sendRequest(
+    algorithm,
+    data
+) {
+
+    const formData =
+        new URLSearchParams();
+
+
+    formData.append(
+        "algorithm",
+        algorithm
+    );
+
+
+    formData.append(
+        "data",
+        data
+    );
+
+
+    const response =
+        await fetch(
+            window.location.pathname,
+            {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/x-www-form-urlencoded",
+
+                    "X-CSRFToken":
+                        getCookie("csrftoken")
+
+                },
+
+                body: formData
+
+            }
+        );
+
+
+    return await response.json();
+
+}
+
+
+/* ==========================================================
+   HTML ESCAPE
+========================================================== */
+
+function escapeHTML(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* ==========================================================
+   ALGORITHM 1
+   AES-256-GCM
+========================================================== */
+
+async function runAES() {
+
+    const data =
+        document.getElementById(
+            "aesData"
+        ).value;
+
+
+    const box =
+        document.getElementById(
+            "aesResult"
+        );
+
+
+    box.style.display = "block";
+
+
+    box.innerHTML =
+        "<p>Processing AES-256-GCM...</p>";
+
+
+    try {
+
+        const result =
+            await sendRequest(
+                "aes",
+                data
+            );
+
+
+        if (!result.success) {
+
+            box.innerHTML = `
+
+                <div class="failure">
+                    ❌ ERROR
+                </div>
+
+                <p class="info">
+                    ${escapeHTML(
+                        result.error
+                    )}
+                </p>
+
+            `;
+
+            return;
+
+        }
+
+
+        box.innerHTML = `
+
+            <div class="flow">
+
+                PLAINTEXT
+
+                <br>↓
+
+                <br>AES-256-GCM
+
+                <br>↓
+
+                <br>CIPHERTEXT
+
+                <br>↓
+
+                <br>DECRYPTION
+
+                <br>↓
+
+                <br>PLAINTEXT
+
+            </div>
+
+
+            <b>
+                Original Plaintext
+            </b>
+
+
+            <div class="output">
+
+                ${escapeHTML(
+                    result.plaintext
+                )}
+
+            </div>
+
+
+            <b>
+                Nonce
+            </b>
+
+
+            <div class="output">
+
+                ${escapeHTML(
+                    result.nonce
+                )}
+
+            </div>
+
+
+            <b>
+                Encrypted Ciphertext
+            </b>
+
+
+            <div class="output">
+
+                ${escapeHTML(
+                    result.ciphertext
+                )}
+
+            </div>
+
+
+            <b>
+                Decrypted Plaintext
+            </b>
+
+
+            <div class="output">
+
+                ${escapeHTML(
+                    result.decrypted
+                )}
+
+            </div>
+
+
+            <div class="success">
+
+                ✓ ENCRYPTION AND DECRYPTION SUCCESSFUL
+
+            </div>
+
+
+            <p class="info">
+
+                AES-256-GCM protects the confidentiality
+                of sensitive medical information.
+
+            </p>
+
+        `;
+
+    }
+
+
+    catch (error) {
+
+        box.innerHTML = `
+
+            <div class="failure">
+                ❌ REQUEST ERROR
+            </div>
+
+            <p class="info">
+
+                ${escapeHTML(
+                    error.toString()
+                )}
+
+            </p>
+
+        `;
+
+    }
+
+}
+
+
+/* ==========================================================
+   ALGORITHM 2
+   ED25519
+========================================================== */
+
+async function runEd25519() {
+
+    const data =
+        document.getElementById(
+            "edData"
+        ).value;
+
+
+    const box =
+        document.getElementById(
+            "edResult"
+        );
+
+
+    box.style.display = "block";
+
+
+    box.innerHTML =
+        "<p>Scanning and verifying prescription...</p>";
+
+
+    try {
+
+        const result =
+            await sendRequest(
+                "ed25519",
+                data
+            );
+
+
+        if (!result.success) {
+
+            box.innerHTML = `
+
+                <div class="failure">
+                    ❌ ERROR
+                </div>
+
+                <p class="info">
+
+                    ${escapeHTML(
+                        result.error
+                    )}
+
+                </p>
+
+            `;
+
+            return;
+
+        }
+
+
+        /* ==================================================
+           VALID
+        ================================================== */
+
+        if (result.verified) {
+
+            box.innerHTML = `
+
+                <div class="flow">
+
+                    PRESCRIPTION DATA
+
+                    <br>↓
+
+                    <br>ED25519 PRIVATE KEY
+
+                    <br>↓
+
+                    <br>DIGITAL SIGNATURE
+
+                    <br>↓
+
+                    <br>PUBLIC KEY
+
+                    <br>↓
+
+                    <br>VERIFY
+
+                </div>
+
+
+                <b>
+                    Current Prescription Data
+                </b>
+
+
+                <div class="output">
+
+                    ${escapeHTML(
+                        result.data
+                    )}
+
+                </div>
+
+
+                <b>
+                    Originally Signed Data
+                </b>
+
+
+                <div class="output">
+
+                    ${escapeHTML(
+                        result.original_data
+                    )}
+
+                </div>
+
+
+                <b>
+                    Public Key
+                </b>
+
+
+                <div class="output">
+
+                    ${escapeHTML(
+                        result.public_key
+                    )}
+
+                </div>
+
+
+                <b>
+                    Digital Signature
+                </b>
+
+
+                <div class="output">
+
+                    ${escapeHTML(
+                        result.signature
+                    )}
+
+                </div>
+
+
+                <div class="success">
+
+                    ✓ SIGNATURE VALID
+
+                </div>
+
+
+                <p class="info">
+
+                    The current prescription matches
+                    the originally signed prescription.
+
+                    The digital signature verifies the
+                    authenticity and integrity of the
+                    signed prescription.
+
+                </p>
+
+            `;
+
+        }
+
+
+        /* ==================================================
+           INVALID
+        ================================================== */
+
+        else {
+
+            box.innerHTML = `
+
+                <div class="flow">
+
+                    CURRENT PRESCRIPTION DATA
+
+                    <br>↓
+
+                    <br>ORIGINAL DIGITAL SIGNATURE
+
+                    <br>↓
+
+                    <br>PUBLIC KEY
+
+                    <br>↓
+
+                    <br>ED25519 VERIFICATION
+
+                    <br>↓
+
+                    <br>❌ INVALID
+
+                </div>
+
+
+                <b>
+                    Current Prescription Data
+                </b>
+
+
+                <div class="output">
+
+                    ${escapeHTML(
+                        result.data
+                    )}
+
+                </div>
+
+
+                <b>
+                    Originally Signed Data
+                </b>
+
+
+                <div class="output">
+
+                    ${escapeHTML(
+                        result.original_data
+                    )}
+
+                </div>
+
+
+                <b>
+                    Original Digital Signature
+                </b>
+
+
+                <div class="output">
+
+                    ${escapeHTML(
+                        result.signature
+                    )}
+
+                </div>
+
+
+                <div class="failure">
+
+                    ✗ SIGNATURE INVALID
+
+                </div>
+
+
+                <p class="info">
+
+                    ⚠ DATA HAS BEEN MODIFIED
+
+                    <br><br>
+
+                    The current prescription does not
+                    match the data that was originally
+                    signed.
+
+                    <br><br>
+
+                    Therefore the original Ed25519
+                    signature cannot verify the modified
+                    prescription.
+
+                </p>
+
+            `;
+
+        }
+
+    }
+
+
+    catch (error) {
+
+        box.innerHTML = `
+
+            <div class="failure">
+
+                ❌ REQUEST ERROR
+
+            </div>
+
+
+            <p class="info">
+
+                ${escapeHTML(
+                    error.toString()
+                )}
+
+            </p>
+
+        `;
+
+    }
+
+}
+
+
+/* ==========================================================
+   RESET ED25519
+========================================================== */
+
+async function resetEd25519() {
+
+    const box =
+        document.getElementById(
+            "edResult"
+        );
+
+
+    box.style.display = "block";
+
+
+    try {
+
+        const result =
+            await sendRequest(
+                "ed25519_reset",
+                ""
+            );
+
+
+        if (result.success) {
+
+            document.getElementById(
+                "edData"
+            ).value =
+`PARACETAMOL 500MG
+Take one tablet after food`;
+
+
+            box.innerHTML = `
+
+                <div class="success">
+
+                    ✓ NEW PRESCRIPTION DEMO READY
+
+                </div>
+
+
+                <p class="info">
+
+                    Enter the original prescription
+                    and click
+
+                    <strong>
+                        SCAN &amp; VERIFY
+                    </strong>
+
+                    to begin.
+
+                </p>
+
+            `;
+
+        }
+
+    }
+
+    catch (error) {
+
+        box.innerHTML = `
+
+            <div class="failure">
+
+                ❌ RESET FAILED
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* ==========================================================
+   ALGORITHM 3
+   SHA-3-256
+========================================================== */
+
+async function runSHA3() {
+
+    const data =
+        document.getElementById(
+            "shaData"
+        ).value;
+
+
+    const box =
+        document.getElementById(
+            "shaResult"
+        );
+
+
+    box.style.display = "block";
+
+
+    box.innerHTML =
+        "<p>Generating and verifying SHA-3-256 hash...</p>";
+
+
+    try {
+
+        const result =
+            await sendRequest(
+                "sha3",
+                data
+            );
+
+
+        if (!result.success) {
+
+            box.innerHTML = `
+
+                <div class="failure">
+
+                    ❌ ERROR
+
+                </div>
+
+
+                <p class="info">
+
+                    ${escapeHTML(
+                        result.error
+                    )}
+
+                </p>
+
+            `;
+
+            return;
+
+        }
+
+
+        /* ==================================================
+           FIRST HASH
+        ================================================== */
+
+        if (result.first_scan) {
+
+            box.innerHTML = `
+
+                <div class="flow">
+
+                    MEDICAL RECORD
+
+                    <br>↓
+
+                    <br>SHA-3-256
+
+                    <br>↓
+
+                    <br>ORIGINAL HASH
+
+                    <br>↓
+
+                    <br>STORE FOR COMPARISON
+
+                </div>
+
+
+                <b>
+                    Original Medical Data
+                </b>
+
+
+                <div class="output">
+
+                    ${escapeHTML(
+                        result.original_data
+                    )}
+
+                </div>
+
+
+                <b>
+                    Original SHA-3-256 Hash
+                </b>
+
+
+                <div class="output">
+
+                    ${escapeHTML(
+                        result.original_hash
+                    )}
+
+                </div>
+
+
+                <div class="success">
+
+                    ✓ ORIGINAL HASH GENERATED
+
+                </div>
+
+
+                <p class="info">
+
+                    Now manually modify the medical data
+                    above and click the same button again.
+
+                </p>
+
+            `;
+
+            return;
+
+        }
+
+
+        /* ==================================================
+           HASH MATCH
+        ================================================== */
+
+        if (result.verified) {
+
+            box.innerHTML = `
+
+                <div class="flow">
+
+                    CURRENT DATA
+
+                    <br>↓
+
+                    <br>SHA-3-256
+
+                    <br>↓
+
+                    <br>CURRENT HASH
+
+                    <br>↓
+
+                    <br>COMPARE
+
+                    <br>↓
+
+                    <br>✓ MATCH
+
+                </div>
+
+
+                <b>
+                    Original SHA-3-256 Hash
+                </b>
+
+
+                <div class="output">
+
+                    ${escapeHTML(
+                        result.original_hash
+                    )}
+
+                </div>
+
+
+                <b>
+                    Current SHA-3-256 Hash
+                </b>
+
+
+                <div class="output">
+
+                    ${escapeHTML(
+                        result.current_hash
+                    )}
+
+                </div>
+
+
+                <div class="success">
+
+                    ✓ HASH MATCH — DATA INTEGRITY VERIFIED
+
+                </div>
+
+
+                <p class="info">
+
+                    The current data produces the same
+                    SHA-3-256 hash as the original data.
+
+                    No modification was detected.
+
+                </p>
+
+            `;
+
+            return;
+
+        }
+
+
+        /* ==================================================
+           HASH MISMATCH
+        ================================================== */
+
+        box.innerHTML = `
+
+            <div class="flow">
+
+                ORIGINAL DATA
+
+                <br>↓
+
+                <br>ORIGINAL HASH
+
+                <br><br>
+
+                CURRENT / MODIFIED DATA
+
+                <br>↓
+
+                <br>NEW HASH
+
+                <br>↓
+
+                <br>❌ HASH MISMATCH
+
+            </div>
+
+
+            <b>
+                Originally Stored Data
+            </b>
+
+
+            <div class="output">
+
+                ${escapeHTML(
+                    result.original_data
+                )}
+
+            </div>
+
+
+            <b>
+                Original SHA-3-256 Hash
+            </b>
+
+
+            <div class="output">
+
+                ${escapeHTML(
+                    result.original_hash
+                )}
+
+            </div>
+
+
+            <b>
+                Current / Modified Data
+            </b>
+
+
+            <div class="output">
+
+                ${escapeHTML(
+                    result.current_data
+                )}
+
+            </div>
+
+
+            <b>
+                Current SHA-3-256 Hash
+            </b>
+
+
+            <div class="output">
+
+                ${escapeHTML(
+                    result.current_hash
+                )}
+
+            </div>
+
+
+            <div class="failure">
+
+                ✗ HASH MISMATCH — DATA HAS BEEN MODIFIED
+
+            </div>
+
+
+            <p class="info">
+
+                Even a small modification produces a
+                different SHA-3-256 hash.
+
+                Therefore comparing the original trusted
+                hash with the newly calculated hash can
+                reveal unauthorized modification.
+
+            </p>
+
+        `;
+
+    }
+
+
+    catch (error) {
+
+        box.innerHTML = `
+
+            <div class="failure">
+
+                ❌ REQUEST ERROR
+
+            </div>
+
+
+            <p class="info">
+
+                ${escapeHTML(
+                    error.toString()
+                )}
+
+            </p>
+
+        `;
+
+    }
+
+}
+
+
+/* ==========================================================
+   RESET SHA-3
+========================================================== */
+
+async function resetSHA3() {
+
+    const box =
+        document.getElementById(
+            "shaResult"
+        );
+
+
+    box.style.display = "block";
+
+
+    try {
+
+        const result =
+            await sendRequest(
+                "sha3_reset",
+                ""
+            );
+
+
+        if (result.success) {
+
+            document.getElementById(
+                "shaData"
+            ).value =
+`Clinical Notes:
+Patient reports intermittent nasal congestion and sneezing.`;
+
+
+            box.innerHTML = `
+
+                <div class="success">
+
+                    ✓ NEW MEDICAL RECORD DEMO READY
+
+                </div>
+
+
+                <p class="info">
+
+                    Enter the original clinical notes
+                    and click
+
+                    <strong>
+                        GENERATE &amp; VERIFY HASH
+                    </strong>
+
+                    to begin.
+
+                </p>
+
+            `;
+
+        }
+
+    }
+
+    catch (error) {
+
+        box.innerHTML = `
+
+            <div class="failure">
+
+                ❌ RESET FAILED
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>

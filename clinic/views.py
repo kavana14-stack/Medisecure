@@ -1,21 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
+from django.http import JsonResponse
+
+from django.contrib.auth.decorators import login_required
+
 from accounts.decorators import role_required
 
-from .forms import AppointmentForm
-from .models import (
-    Appointment,
-    MedicalRecord,
-    DoctorKey,
-    Prescription,
-)
-
 from cryptoutils.aes import encrypt_data, decrypt_data
+
 from cryptoutils.ed25519 import (
     generate_keypair,
     sign_data,
     verify_signature,
 )
+
+from cryptoutils.sha3 import hash_data
 
 
 # ============================================================
@@ -526,4 +525,437 @@ def patient_prescriptions(request):
         {
             "prescriptions": prescriptions
         }
+    )
+
+# ============================================================
+# SECURITY DEMONSTRATION
+# ============================================================
+
+# ============================================================
+# SECURITY DEMONSTRATION
+# AES-256-GCM + Ed25519 + SHA-3-256
+# ============================================================
+
+def security_demo(request):
+
+    # ========================================================
+    # POST REQUEST
+    # ========================================================
+
+    if request.method == "POST":
+
+        algorithm = request.POST.get("algorithm", "")
+        data = request.POST.get("data", "")
+
+        # ====================================================
+        # RESET ED25519 DEMO
+        # ====================================================
+
+        if algorithm == "ed25519_reset":
+
+            request.session.pop(
+                "ed_original_data",
+                None
+            )
+
+            request.session.pop(
+                "ed_signature",
+                None
+            )
+
+            request.session.pop(
+                "ed_public_key",
+                None
+            )
+
+            request.session.modified = True
+
+            return JsonResponse({
+                "success": True
+            })
+
+
+        # ====================================================
+        # RESET SHA-3 DEMO
+        # ====================================================
+
+        if algorithm == "sha3_reset":
+
+            request.session.pop(
+                "sha3_original_data",
+                None
+            )
+
+            request.session.pop(
+                "sha3_original_hash",
+                None
+            )
+
+            request.session.modified = True
+
+            return JsonResponse({
+                "success": True
+            })
+
+
+        # ====================================================
+        # ALGORITHM 1
+        # AES-256-GCM
+        # ====================================================
+
+        if algorithm == "aes":
+
+            if not data:
+
+                return JsonResponse({
+                    "success": False,
+                    "error": "Please enter medical data."
+                })
+
+
+            try:
+
+                plaintext = data
+
+                nonce, ciphertext = encrypt_data(
+                    plaintext
+                )
+
+                decrypted = decrypt_data(
+                    nonce,
+                    ciphertext
+                )
+
+                return JsonResponse({
+
+                    "success": True,
+
+                    "algorithm": "AES-256-GCM",
+
+                    "plaintext": plaintext,
+
+                    "nonce": nonce,
+
+                    "ciphertext": ciphertext,
+
+                    "decrypted": decrypted,
+
+                    "verified": (
+                        decrypted == plaintext
+                    )
+
+                })
+
+
+            except Exception as e:
+
+                return JsonResponse({
+
+                    "success": False,
+
+                    "error": str(e)
+
+                })
+
+
+        # ====================================================
+        # ALGORITHM 2
+        # ED25519 DIGITAL SIGNATURE
+        # ====================================================
+
+        if algorithm == "ed25519":
+
+            if not data:
+
+                return JsonResponse({
+
+                    "success": False,
+
+                    "error":
+                        "Please enter prescription data."
+
+                })
+
+
+            try:
+
+                # --------------------------------------------
+                # FIRST SCAN
+                # --------------------------------------------
+
+                if "ed_original_data" not in request.session:
+
+                    private_key, public_key = (
+                        generate_keypair()
+                    )
+
+                    signature = sign_data(
+                        data,
+                        private_key
+                    )
+
+                    request.session[
+                        "ed_original_data"
+                    ] = data
+
+                    request.session[
+                        "ed_signature"
+                    ] = signature
+
+                    request.session[
+                        "ed_public_key"
+                    ] = public_key
+
+                    request.session.modified = True
+
+                    valid = verify_signature(
+                        data,
+                        signature,
+                        public_key
+                    )
+
+                    return JsonResponse({
+
+                        "success": True,
+
+                        "algorithm": "Ed25519",
+
+                        "data": data,
+
+                        "original_data": data,
+
+                        "signature": signature,
+
+                        "public_key": public_key,
+
+                        "verified": valid,
+
+                        "first_scan": True,
+
+                        "modified": False
+
+                    })
+
+
+                # --------------------------------------------
+                # SECOND / LATER SCAN
+                # --------------------------------------------
+
+                original_data = request.session[
+                    "ed_original_data"
+                ]
+
+                original_signature = request.session[
+                    "ed_signature"
+                ]
+
+                original_public_key = request.session[
+                    "ed_public_key"
+                ]
+
+                valid = verify_signature(
+                    data,
+                    original_signature,
+                    original_public_key
+                )
+
+                return JsonResponse({
+
+                    "success": True,
+
+                    "algorithm": "Ed25519",
+
+                    "data": data,
+
+                    "original_data":
+                        original_data,
+
+                    "signature":
+                        original_signature,
+
+                    "public_key":
+                        original_public_key,
+
+                    "verified":
+                        valid,
+
+                    "first_scan":
+                        False,
+
+                    "modified":
+                        data != original_data
+
+                })
+
+
+            except Exception as e:
+
+                return JsonResponse({
+
+                    "success": False,
+
+                    "error": str(e)
+
+                })
+
+
+        # ====================================================
+        # ALGORITHM 3
+        # SHA-3-256
+        # ====================================================
+
+        if algorithm == "sha3":
+
+            if not data:
+
+                return JsonResponse({
+
+                    "success": False,
+
+                    "error":
+                        "Please enter medical data."
+
+                })
+
+
+            try:
+
+                # --------------------------------------------
+                # CALCULATE CURRENT HASH
+                # --------------------------------------------
+
+                current_hash = hash_data(
+                    data
+                )
+
+
+                # --------------------------------------------
+                # FIRST SCAN
+                # --------------------------------------------
+
+                if (
+                    "sha3_original_data"
+                    not in request.session
+                ):
+
+                    request.session[
+                        "sha3_original_data"
+                    ] = data
+
+                    request.session[
+                        "sha3_original_hash"
+                    ] = current_hash
+
+                    request.session.modified = True
+
+                    return JsonResponse({
+
+                        "success": True,
+
+                        "algorithm":
+                            "SHA-3-256",
+
+                        "original_data":
+                            data,
+
+                        "original_hash":
+                            current_hash,
+
+                        "current_data":
+                            data,
+
+                        "current_hash":
+                            current_hash,
+
+                        "verified":
+                            True,
+
+                        "modified":
+                            False,
+
+                        "first_scan":
+                            True
+
+                    })
+
+
+                # --------------------------------------------
+                # SECOND / LATER SCAN
+                # --------------------------------------------
+
+                original_data = request.session[
+                    "sha3_original_data"
+                ]
+
+                original_hash = request.session[
+                    "sha3_original_hash"
+                ]
+
+                verified = (
+                    current_hash ==
+                    original_hash
+                )
+
+                return JsonResponse({
+
+                    "success": True,
+
+                    "algorithm":
+                        "SHA-3-256",
+
+                    "original_data":
+                        original_data,
+
+                    "original_hash":
+                        original_hash,
+
+                    "current_data":
+                        data,
+
+                    "current_hash":
+                        current_hash,
+
+                    "verified":
+                        verified,
+
+                    "modified":
+                        data != original_data,
+
+                    "first_scan":
+                        False
+
+                })
+
+
+            except Exception as e:
+
+                return JsonResponse({
+
+                    "success": False,
+
+                    "error": str(e)
+
+                })
+
+
+        # ====================================================
+        # UNKNOWN ALGORITHM
+        # ====================================================
+
+        return JsonResponse({
+
+            "success": False,
+
+            "error": "Unknown algorithm."
+
+        })
+
+
+    # ========================================================
+    # GET REQUEST
+    # ========================================================
+
+    return render(
+        request,
+        "clinic/security_demo.html"
     )

@@ -12,6 +12,7 @@ from .views import (
         verify_medical_record,
         patient_medical_records,
         patient_prescriptions,
+            security_demo,
 )
 
 
@@ -75,5 +76,11 @@ urlpatterns = [
     "my-prescriptions/",
     patient_prescriptions,
     name="patient_prescriptions"
-),
+    ),
+        path(
+        "security-demo/",
+        security_demo,
+        name="security_demo"
+    ),
+
 ]
